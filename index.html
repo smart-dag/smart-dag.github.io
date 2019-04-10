@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="SDAG sdag Blockchain businesses wallet explorer">
+        <meta name="author" content="SDAG">
+
+        <title>SDAG</title>
+        <!-- Web Fonts -->
+        <!-- Bootstrap core CSS -->
+        <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Icon Fonts -->
+        <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="assets/css/simple-line-icons.css" rel="stylesheet" />
+
+        <!-- Plugins -->
+        <link href="assets/css/magnific-popup.css" rel="stylesheet" />
+        <link href="assets/css/owl.carousel.css" rel="stylesheet" />
+        <link href="assets/css/flexslider.css" rel="stylesheet" />
+        <link href="assets/css/animate.min.css" rel="stylesheet" />
+
+        <!-- Template core CSS -->
+        <link href="assets/css/vertical.min.css" rel="stylesheet" />
+        <link href="assets/css/template.css" rel="stylesheet" />
+        <link href="assets/css/home.css" rel="stylesheet" />
+        <style id="fit-vids-style">
+            .fluid-width-video-wrapper {
+                width: 100%;
+                position: relative;
+                padding: 0;
+            }
+
+            .fluid-width-video-wrapper iframe,
+            .fluid-width-video-wrapper object,
+            .fluid-width-video-wrapper embed {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <style type="text/css" id="#jarallax-clip-0">
+            #jarallax-container-0 {
+                clip: rect(0 1134px 710.5px 0);
+                clip: rect(0, 1134px, 710.5px, 0);
+            }
+        </style>
+        <style type="text/css" id="#jarallax-clip-2">
+            #jarallax-container-2 {
+                clip: rect(0 1134px 566.40625px 0);
+                clip: rect(0, 1134px, 566.40625px, 0);
+            }
+        </style>
+        <style type="text/css" id="#jarallax-clip-1">
+            #jarallax-container-1 {
+                clip: rect(0 1134px 388px 0);
+                clip: rect(0, 1134px, 388px, 0);
+            }
+        </style>
+    </head>
+    <title>Hello Adonis</title>
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+</head>
+
+<body class="">
+
+    <!-- PRELOADER -->
+    <div class="page-loader" style="display: none;">
+        <div class="img-loader">Loading...
+            <!-- Bcoin logo in SVG -->
+            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="56px"
+                viewBox="0 0 200 56" style="enable-background:new 0 0 200 56;" xml:space="preserve">
+                <style type="text/css">
+                    .st0 {
+                        fill: #070E3E;
+                    }
+                </style>
+                <g>
+                    <path class="st0"
+                        d="M32.6,20.9c-1.5-1.5-3.3-2.7-5.2-3.5c-2-0.8-4.1-1.2-6.3-1.2c-2.6,0-5,0.6-7.2,1.7c-2,1-3.7,2.5-4.9,4.4V3.6
+                            L8.4,3H3L2.3,3.6v48.5L3,52.8h5.4L9,52.1v-4.3c0.6,0.9,1.2,1.6,2,2.3c0.9,0.8,1.9,1.5,3,2c1.1,0.6,2.2,1,3.4,1.2
+                            c1.2,0.3,2.4,0.4,3.5,0.4c2.2,0,4.4-0.4,6.4-1.2c2-0.8,3.8-2,5.3-3.5c1.5-1.5,2.7-3.5,3.6-5.7c0.9-2.2,1.3-4.8,1.3-7.7v-1.4
+                            c0-2.8-0.4-5.4-1.3-7.7C35.4,24.4,34.1,22.4,32.6,20.9z M30.7,34.3v1.4c0,1.8-0.3,3.5-0.8,4.9c-0.5,1.4-1.3,2.7-2.3,3.7
+                            c-1,1-2.1,1.8-3.4,2.3c-1.3,0.5-2.8,0.8-4.3,0.8c-1.5,0-2.9-0.3-4.2-0.8c-1.3-0.6-2.4-1.4-3.4-2.4c-1-1-1.8-2.3-2.3-3.8
+                            C9.3,38.8,9,37.2,9,35.4v-0.8c0-1.8,0.3-3.4,0.9-4.9c0.6-1.5,1.4-2.7,2.3-3.8c1-1,2.1-1.9,3.4-2.5c1.3-0.6,2.7-0.9,4.2-0.9
+                            c1.5,0,3,0.3,4.3,0.8c1.3,0.6,2.5,1.4,3.5,2.4c1,1,1.7,2.3,2.3,3.7C30.5,30.9,30.7,32.5,30.7,34.3z"></path>
+                    <path class="st0" d="M71.8,38.1L71,38.6c-0.2,1.1-0.5,2.2-1,3.3c-0.5,1-1.2,2-2,2.8c-0.8,0.8-1.9,1.5-3.1,2
+                            c-1.2,0.5-2.6,0.7-4.2,0.7c-1.6,0-3.2-0.3-4.5-0.8c-1.4-0.5-2.6-1.3-3.7-2.3c-1-1-1.9-2.2-2.4-3.7c-0.6-1.5-0.9-3.1-0.9-5v-0.8
+                            c0-1.8,0.3-3.4,0.9-4.9c0.6-1.5,1.4-2.8,2.5-3.8c1-1.1,2.3-1.9,3.6-2.5c1.4-0.6,2.9-0.9,4.4-0.9c1.6,0,3.1,0.2,4.3,0.7
+                            c1.2,0.5,2.2,1.1,3.1,1.9c0.8,0.8,1.5,1.7,2,2.8c0.5,1.1,0.8,2.2,0.9,3.3l0.8,0.6l5.4-1.2l0.5-0.7c-0.3-2-1-3.8-1.9-5.5
+                            c-0.9-1.7-2.2-3.2-3.6-4.4c-1.5-1.2-3.2-2.2-5.1-2.9c-1.9-0.7-4-1-6.2-1c-2.5,0-4.8,0.4-7.1,1.3c-2.2,0.9-4.2,2.1-5.9,3.7
+                            c-1.7,1.6-3,3.5-4,5.8c-1,2.3-1.5,4.9-1.5,7.7v0.8c0,2.9,0.5,5.5,1.5,7.7c1,2.2,2.3,4.2,4,5.7c1.7,1.6,3.6,2.8,5.9,3.6
+                            c2.2,0.8,4.6,1.2,7.1,1.2c2.3,0,4.5-0.3,6.4-1c1.9-0.7,3.6-1.6,5.1-2.9c1.4-1.2,2.6-2.7,3.6-4.4c0.9-1.7,1.6-3.5,2-5.5l-0.5-0.8
+                            L71.8,38.1z"></path>
+                    <path class="st0"
+                        d="M113.2,21c-1.6-1.6-3.6-2.8-5.7-3.6c-2.1-0.8-4.4-1.2-6.7-1.2c-2.3,0-4.6,0.4-6.7,1.2c-2.2,0.8-4.1,2-5.7,3.6
+                            c-1.7,1.6-3,3.5-4,5.8c-1,2.3-1.5,4.9-1.5,7.8v0.8c0,2.9,0.5,5.6,1.5,7.8c1,2.3,2.3,4.2,3.9,5.8c1.6,1.6,3.5,2.8,5.7,3.6
+                            c2.1,0.8,4.4,1.2,6.8,1.2c2.3,0,4.6-0.4,6.8-1.2c2.2-0.8,4.1-2,5.7-3.6c1.6-1.6,2.9-3.5,3.9-5.8c1-2.3,1.5-4.9,1.5-7.8v-0.8
+                            c0-2.9-0.5-5.5-1.5-7.8C116.2,24.5,114.9,22.5,113.2,21z M100.8,47.3c-1.6,0-3-0.3-4.4-0.8c-1.3-0.5-2.5-1.3-3.5-2.4
+                            c-1-1-1.8-2.3-2.4-3.8c-0.6-1.5-0.9-3.1-0.9-5v-0.8c0-1.8,0.3-3.4,0.9-4.9c0.6-1.5,1.4-2.7,2.4-3.8c1-1,2.2-1.9,3.5-2.5
+                            c1.3-0.6,2.8-0.9,4.3-0.9s3,0.3,4.3,0.9c1.3,0.6,2.5,1.4,3.5,2.5c1,1,1.8,2.3,2.4,3.8c0.6,1.5,0.9,3.1,0.9,4.9v0.8
+                            c0,1.8-0.3,3.5-0.9,5c-0.6,1.5-1.4,2.7-2.4,3.8c-1,1-2.2,1.8-3.5,2.4C103.8,47.1,102.3,47.3,100.8,47.3z">
+                    </path>
+                    <path class="st0"
+                        d="M141.8,13c1.5,0,2.8-0.5,3.9-1.6c1.1-1.1,1.6-2.4,1.6-3.9c0-1.5-0.5-2.8-1.6-3.9c-1.1-1.1-2.4-1.6-3.9-1.6
+                            c-1.5,0-2.8,0.5-3.9,1.6c-1.1,1.1-1.6,2.4-1.6,3.9c0,1.5,0.5,2.8,1.6,3.9C139,12.5,140.3,13,141.8,13z">
+                    </path>
+                    <polygon class="st0"
+                        points="145.2,46.5 145.2,17.8 144.6,17.1 128.4,17.1 127.7,17.8 127.7,22.8 128.4,23.4 138.5,23.4 
+                            138.5,46.5 127.1,46.5 126.5,47.2 126.5,52.1 127.1,52.8 155.8,52.8 156.5,52.1 156.5,47.2 155.8,46.5 	">
+                    </polygon>
+                    <path class="st0" d="M194.3,20.1c-2.5-2.6-5.8-3.9-10-3.9c-5.2,0-9,2.1-11.3,6.4v-4.7l-0.6-0.6H167l-0.6,0.6v34.4l0.6,0.6h5.4
+                            l0.6-0.6V34.3c0-3.6,0.9-6.4,2.7-8.6c1.8-2.1,4.1-3.1,7.2-3.1c2.6,0,4.6,0.8,6.1,2.5c1.5,1.7,2.3,4.3,2.3,7.7v19.4l0.6,0.6h5.4
+                            l0.6-0.6V31.6C198,26.5,196.7,22.6,194.3,20.1z"></path>
+                </g>
+            </svg>
+
+
+
+        </div>
+    </div>
+    <!-- END PRELOADER -->
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+
+        <!-- HERO -->
+
+        <section id="hero" class="module-hero color-white parallax" data-background="assets/images/bg-header2.jpg"
+            style="background-image: none; background-attachment: scroll; background-size: auto;"
+            data-jarallax-original-styles="background-image: url(&quot;assets/images/bg-header2.jpg&quot;);">
+            <!-- HERO TEXT -->
+            <div class="hero-caption">
+                <div class="hero-text">
+
+                    <div class="container">
+
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 text-center ideatime">
+                                <img class="module-header m-t-30 m-b-10 hero-image"
+                                    src="assets/images/bcoin-logo-gradient-text.png"
+                                    alt="An advanced fullnode implementation built for the native web.">
+                                <h3 class="hero-module-header hero-para text-center"><span
+                                        class="text-highlight-black">一款性能领先的区块链基础设施</span><br></h3>
+                                <h3 class="hero-module-header hero-para text-center"><span
+                                        class="text-highlight-black">2分钟起链&nbsp;&nbsp;&nbsp;区块链世界中的wordpress</span><br>
+                                </h3>
+
+
+                                <div class="row">
+                                    <div class="row col-sm-12 text-center auto-margin-sides">
+                                        <a href="assets/pdf/sdag.pdf" target="_blank" class="btn btn-gray">白皮书</a>
+                                        <a href="https://github.com/smart-dag" target="_blank"
+                                            class="btn btn-purple button-gap">源码</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 m-t-50 projects-hero">
+                                <!--
+                                    <div class="projects-list">
+                                        <h3>Projects</h3>
+                                        <div class="projects-item">
+                                            <a href="github.com/smart-dag" target="_blank">
+                                            <div class="input-group-addon" id="green"><div class="bitcoin-logo-small"></div></div>
+                                            <div class="form-control">
+                                                <div class="project-info">
+                                                    <div class="p-name">docker<span class="p-imp"> | docker</span></div>
+                                                    <span class="p-link">github.com/smart-dag</span>&nbsp;&nbsp;<i class="fa fa-external-link"></i>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                        <div class="projects-item">
+                                            <a href="github.com/smart-dag" target="_blank">
+                                            <div class="input-group-addon" id="blue"><div class="bitcoin-cash-logo" style="width: 42px;height: 42px;margin: 4px 4px 0 4px;"></div></div>
+                                            <div class="form-control">
+                                                <div class="project-info">
+                                                    <div class="p-name">wallet<span class="p-imp"> | Bitcoin Cash</span></div>
+                                                    <span class="p-link">github.com/smart-dag</span>&nbsp;&nbsp;<i class="fa fa-external-link"></i>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                        <div class="projects-item">
+                                            <a href="github.com/smart-dag" target="_blank">
+                                            <div class="input-group-addon" id="purple"><div class="menace-raccoon" style="width: 44px;height: 44px;margin: 3px 3px 0 3px;"></div></div>
+                                            <div class="form-control">
+                                                <div class="project-info">
+                                                    <div class="p-name">jssdk<span class="p-imp"> | UI Framework</span></div>
+                                                    <span class="p-link">github.com/smart-dag</span>&nbsp;&nbsp;<i class="fa fa-external-link"></i>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                -->
+                                <!--<div class="community-links">
+                                        <a href="slack-signup.html" target="_blank" id="" data-toggle="tooltip" title="" data-placement="left" data-original-title="Join us on Slack!">
+                                        <div class="slack-icon"><h3>Join the Community on Slack</h3></div>
+                                        </a>
+                                    </div>-->
+                                <div class="terminal-window">
+                                    <header>
+                                        <div class="button green"></div>
+                                        <div class="button yellow"></div>
+                                        <div class="button red"></div>
+                                    </header>
+                                    <section class="terminal">
+                                        <div class="history"></div>
+                                        $&nbsp;<span class="prompt">docker pull
+                                            registry.cn-beijing.aliyuncs.com/sdag/sdag_testnet_dev:latest</span><br>
+                                        $&nbsp;<span class="prompt">docker run --rm -d --name sdag -p 6615:6615 -p
+                                            8080:8080 registry.cn-beijing.aliyuncs.com/sdag/sdag_testnet_dev</span><br>
+                                        $&nbsp;<span class="prompt">http://localhost:8080</span><br>
+                                        <span class="typed-cursor"></span>
+
+                                    </section>
+                                </div>
+                            </div>
+                        </div> <!-- end of row -->
+
+                    </div><!-- end of container -->
+
+                </div>
+            </div>
+            <!-- END HERO TEXT -->
+            <div id="jarallax-container-0"
+                style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -100; transform: translateX(0px) translateY(0px);">
+                <div
+                    style="background-position: 50% 50%; background-size: 100%; background-repeat: no-repeat; background-image: url(&quot;http://bcoin.io/assets/images/bg-header2.jpg&quot;); position: fixed; top: 0px; left: 0px; width: 1709px; height: 1139.33px; overflow: hidden; pointer-events: none; margin-left: 0px; margin-top: 102.833px; visibility: visible; transform: translate3d(0px, 134.475px, 0px);">
+                </div>
+            </div>
+        </section>
+        <!-- END HERO -->
+
+        <!-- HEADER STICKY BOTTOM -->
+        <header class="header js-stick header-small">
+            <div class="container">
+                <!-- YOUR LOGO HERE -->
+                <div class="inner-header">
+                    <a class="inner-brand" href="index.html">
+                        <img class="brand-light" src="assets/images/logo-light.png" width="100" alt="">
+                        <img class="brand-dark" src="assets/images/logo-dark.png" width="100" alt="">
+                    </a>
+                </div>
+
+                <!-- OPEN MOBILE MENU -->
+                <div class="main-nav-toggle">
+                    <div class="nav-icon-toggle" data-toggle="collapse" data-target="#custom-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </div>
+                </div>
+
+                <!-- WIDGETS MENU -->
+                <div class="inner-header pull-right hide-me">
+                    <div class="menu-extras clearfix">
+
+
+
+                        <!-- GITHUB STUFF -->
+                        <div class="menu-item">
+                            <div class="">
+                                <a href="https://github.com/smart-dag" target="_blank" id="" data-toggle="tooltip"
+                                    title="" data-placement="bottom">
+                                    <img src="assets/images/github_icon.svg" width="18" height="18">
+                                    <span class=""></span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- GH STARS AND FORKS -->
+                        <!--
+                            <div class="menu-item">
+                                <div class="ghbuttons">
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>-->
+
+
+                        <!-- SEARCH
+                            <div class="menu-item hidden-xxs">
+                                <div class="extras-search">
+                                    <a id="modal-search" href="#"><i class="icon-magnifier icons"></i></a>
+                                    <form action="#" class="header-search-form">
+                                        <div class="search-form-inner">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="header-search-form-clouse">
+                                                            <a href="#" class="form-close-btn">✕</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <input type="text" placeholder="Type &amp; hit enter">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                             END SEARCH -->
+
+                    </div>
+                </div>
+
+                <!-- MAIN MENU -->
+
+                <nav id="custom-collapse" class="main-nav collapse clearfix">
+                    <ul class="inner-nav pull-right">
+
+                        <!-- HOME -->
+                        <li><a href="#">首页</a></li>
+                        <!-- END HOME -->
+
+                        <!-- FEATURES -->
+                        <li><a href="https://explorer.sdag.io/" target="_blank">浏览器</a></li>
+                        <!-- END FEATURES -->
+
+                        <!-- GUIDES -->
+                        <li><a href="https://wallet.sdag.io/" target="_blank">钱包</a></li>
+                        <!-- GUIDES -->
+
+                    </ul>
+                </nav>
+
+            </div>
+        </header>
+        <!-- HEADER STICKY BOTTOM -->
+
+        <!-- MAIN 3 FEATURES -->
+        <section class="module-sm bg-white-dark" id="features">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <div class="module-header text-center">
+                            <h2 class="montserrat text-uppercase">3大产品</h2>
+                            <p class="lead divider-line">SDAG提供3大产品，轻松满足各种用户的各种需求。</p>
+                        </div>
+                    </div>
+                </div><!-- .row -->
+
+                <div class="row multi-columns-row">
+
+                    <!-- ICONBOX -->
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div class="box-icon-left">
+                            <div class="icon-box-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <h4>Docker</h4>
+                            <p>零门槛建立区块链，最快只需2分钟。内含3个公证节点，1个代理节点和1个浏览器。</p>
+                            <a href="https://github.com/smart-dag/docs/tree/master/start-docker" target="_blank"
+                                class="btn btn-lg btn-link btn-base">详情 ›</a>
+                        </div>
+                    </div>
+                    <!-- END ICONBOX -->
+
+                    <!-- ICONBOX -->
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div class="box-icon-left">
+                            <div class="icon-box-icon">
+                                <i class="icon-wallet icons"></i>
+                            </div>
+                            <h4>wallet</h4>
+                            <p>钱包提供网页版、PC版和手机版，支持chrome浏览器插件和物联网设备。</p>
+                            <a href="https://github.com/smart-dag/docs/tree/master/use-desktop-wallet" target="_blank"
+                                class="btn btn-lg btn-link btn-base">详情 ›</a>
+                        </div>
+                    </div>
+                    <!-- END ICONBOX -->
+
+                    <!-- ICONBOX -->
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div class="box-icon-left">
+                            <div class="icon-box-icon">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <h4>jssdk</h4>
+                            <p>SDAG提供jssdk，极大降低了开发门槛，只要会jquery，就能开发区块链应用。</p>
+                            <a href="https://github.com/smart-dag/docs/blob/master/GettingStarted/README.md"
+                                target="_blank" class="btn btn-lg btn-link btn-base">详情 ›</a>
+                        </div>
+                    </div>
+                    <!-- END ICONBOX -->
+
+                </div><!-- .row -->
+
+            </div>
+        </section>
+        <!-- END MAIN 3 FEATURES -->
+
+        <!-- CLIENTS -->
+
+        <!-- END CLIENTS -->
+
+        <!-- ABOUT -->
+
+        <!-- END ABOUT -->
+
+        <!-- ABOUT -->
+
+        <!-- END ABOUT -->
+
+        <!-- ABOUT -->
+        <section id="advanced" class="module-xs pull-image p-b-140">
+            <div class="col-md-6 col-md-push-6 col-sm-4 col-sm-push-8 p-0 m-b-50">
+                <img src="assets/images/flowchart150dpi.png" class="flowchart-image" alt="">
+            </div>
+
+            <div class="container">
+                <div class="col-md-6 col-md-pull-0 col-sm-6 col-sm-pull-4">
+                    <!--note: remove m-t-100 from class below -->
+                    <h1 class="text-300">SDAG三大优点<br></h1>
+                    <p></p>
+
+                    <div class="box-icon-left">
+                        <div class="icon-box-icon"><i class="fas fa-project-diagram"></i></div>
+                        <h4>下一代区块链技术</h4>
+                        <p>SDAG是基于有向无环图技术全新设计的高性能分布式共识系统，支持高并发，秒级确认，无需挖矿，增加单元无需等待。SDAG立足于下一代区块链技术，彻底解决了传统区块链的扩容问题和回退问题。
+                        </p>
+                    </div>
+
+                    <div class="box-icon-left">
+                        <div class="icon-box-icon"><i class="fas fa-seedling"></i></div>
+                        <h4>广泛业务支持</h4>
+                        <p>SDAG本身是一套防篡改去中心化共识系统，可以存储任意事件。由于建立了任意事件的全局序共识，因此可以基于此开发任何可能的业务，比如发行资产，交易，存证和溯源等，包括体现价值转移的数据，例如货币、产权、负债、股权等。其模块化设计方便用戶像搭积木一样搭建自己的区块链业务系统。SDAG插件丰富，拥有完备的工具集，可以对各行各业的应用场景进行广泛地支持。
+                        </p>
+                    </div>
+
+                    <div class="box-icon-left">
+                        <div class="icon-box-icon"><i class="fas fa-key"></i></div>
+                        <h4>高安全 高性能</h4>
+                        <p>SDAG采用RUST语言开发，采用最新的协程技术和无锁数据结构优雅的解决了高并发的难题，可以使系统资源达到最大化的利用。TPS可达10000+。RUST语言的高性能和安全性，也保证了SDAG整体的稳定性和安全性。
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- END ABOUT -->
+
+
+        <!-- PARALLAX DOCS CTA -->
+        <section class="module bg-white-alfa-30 parallax color-white" data-background="assets/images/bg-header.jpg"
+            style="background-image: none; background-attachment: scroll; background-size: auto;"
+            data-jarallax-original-styles="background-image: url(&quot;assets/images/bg-header.jpg&quot;);">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <h2 class="montserrat text-uppercase m-b-30">扫码入群，深入了解SDAG</h2>
+                            <p><img src="assets/images/qrcode.jpg" width="250"></p>
+                            <!--<a href="" target="_blank" class="btn btn-lg btn-purple">阅读文档</a>-->
+                        </div>
+                    </div>
+                </div><!-- .row -->
+
+            </div>
+            <div id="jarallax-container-1"
+                style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -100; transform: translateX(0px) translateY(0px);">
+                <div
+                    style="background-position: 50% 50%; background-size: 100%; background-repeat: no-repeat; background-image: url(&quot;http://bcoin.io/assets/images/bg-header.jpg&quot;); position: fixed; top: 0px; left: 0px; width: 1709px; height: 1139.33px; overflow: hidden; pointer-events: none; margin-left: 0px; margin-top: 102.833px; visibility: visible; transform: translate3d(0px, -737.798px, 0px);">
+                </div>
+            </div>
+        </section>
+        <!-- END PARALLAX DOCS CTA -->
+
+        <!-- GET STARTED WITH CODE BOX -->
+        <section class="module" id="get-started">
+            <div class="container">
+                <!-- TITLE AND COPY -->
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <div class="module-header text-center">
+                            <h2 class="montserrat text-uppercase">区块链+让传统业务赋能</h2>
+                            <p class="lead-more divider-line"></p>
+                        </div>
+                    </div>
+                </div><!-- .row -->
+
+                <!--whole new row-->
+                <div class="row row-sm-height">
+                    <!-- LEFT SIDE BIG BOX -->
+                    <div class="col-sm-6 col-sm-height col-sm-middle">
+
+                        <div class="page-terminal">
+
+                            <div>
+                                <pre class="select-auto hide-this">
+
+    <span>import</span> <span class="code-blue">Wallet</span> from 'sdagwallet.js';
+
+    <span>let</span> <span class="code-blue">Wallet</span> = new Wallet();
+    
+    <span class="code-blue">wallet</span>.configHub("ws://10.168.3.131:6635");
+
+    <span class="code-blue">wallet</span>.generateMnemonic();
+    
+    <span>await</span> <span class="code-blue">wallet</span>.loginWithMnemonic(secret, password);
+
+    <span>await</span> <span class="code-blue">wallet</span>.getBalance();
+    
+    </pre>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-sm-1 col-sm-height col-sm-middle"></div>
+
+                    <div class="col-sm-4 col-sm-height col-sm-middle">
+                        <!--spacer in middle-->
+                        <h3></h3>
+                        <div class="m-t-50 m-b-50">
+                            <p>SDAG正在把jssdk打造成中间件，通过被集成的方式，在无需替代原有系统的情况下，可轻松接入区块链，实现即时支付、存证、溯源、共享经济等各种应用场景的区块链化。</p>
+                        </div>
+
+
+
+
+                    </div>
+
+
+                    <div class="col-sm-1 col-sm-height col-sm-middle"></div>
+
+                </div>
+
+
+                <div class="col-sm-6 col-sm-offset-3 text-center p-t-50">
+                    <!--
+                                    <div class="module-header text-center">
+                                        hello<a href="" target="_blank"></a>
+                                    </div>-->
+                    <div class="row">
+                        <a href="https://github.com/smart-dag/samples" target="_blank" class="btn btn-gray">更多示例</a>
+                        <a href="https://github.com/smart-dag/docs" target="_blank"
+                            class="btn btn-purple button-gap">文档</a>
+                    </div>
+                </div>
+            </div>
+            <!--end container-->
+        </section>
+        <!-- END STATIC CODE BOX -->
+
+        <!-- QUOTES -->
+        <!-- END QUOTES -->
+        <!-- FOOTER -->
+        <footer id="footer" class="footer-minimal">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <p class="m-0">Copyright <a href="#">sdag.io</a> 2019, All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- END FOOTER -->
+
+    </div>
+    <!-- END WRAPPER -->
+
+    <!-- JAVASCRIPT FILES -->
+
+    <script src="assets/js/jquery-2.2.3.min.js"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?v=3"></script>-->
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/plugins.min.js"></script>
+    <script src="assets/js/stickyfill.min.js"></script>
+    <script src="assets/js/custom.min.js"></script>
+
+    <!--for animated terminal window (also requires jQ 2.1.3+) 
+        <script src="assets/js/typed.custom.js"></script>
+        <script src="assets/js/terminalcodedemo.js"></script>-->
+
+
+    <!-- github button js -->
+    <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+</body>
+
+</html>
