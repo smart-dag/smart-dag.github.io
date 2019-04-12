@@ -22,3 +22,11 @@ body {
 .footer-minimal {
   margin-top: -140px;
 }
+
+.text-highlight-black {
+  background-color: rgba(255, 255, 255, 0.28);
+  color: #333;
+  padding: 2px;
+  white-space: pre-wrap;
+  word-spacing: -2px;
+}
