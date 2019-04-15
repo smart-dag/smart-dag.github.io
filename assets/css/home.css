@@ -30,3 +30,7 @@ body {
   white-space: pre-wrap;
   word-spacing: -2px;
 }
+
+.box-icon-left .icon-box-icon {
+  top: 26px;
+}
