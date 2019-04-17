@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/canvasjs.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="chartContainer" style="height: 370px; width:100%;"></div>
+</body>
+<script type="text/javascript">
+    var request = [];
+    var tag = 1;
+    //原始的tps
+    var tps_arr = [];
+    //平滑的tps(经过插值的)
+    var tps = [];
+    var y = 0;
+
+    request["heartbeat"] = [
+        "request",
+        {
+            command: "heartbeat",
+            tag: tag.toString()
+        }
+    ]
+
+    request["justsaying"] = [
+        "justsaying",
+        {
+            "subject": "version",
+            "body": {
+                "protocol_version": "1.0",
+                "alt": "1",
+                "library": "rust-sdag",
+                "library_version": "rust-sdag-hub",
+                "program": "rust-sdag-hub",
+                "program_version": "1.0"
+            }
+        }
+    ]
+
+    request["balance"] = [
+        "request",
+        {
+            command: "get_balance",
+            params: "5YJKYU5NFWEUJAO4M2WNR4O3W5Z62ZYO",
+            tag: tag.toString()
+        }
+    ]
+
+    request["tps"] = [
+        "request",
+        {
+            command: "get_tps",
+            tag: tag.toString()
+        }
+    ]
+
+    //模拟tps数据
+    function testget() {
+        tps_arr = [];
+        for (let index = 0; index < 60; index++) {
+            var num = Math.round(5 + Math.random() * 5);
+            tps_arr.push(num);
+        }
+        console.log(tps_arr);
+    }
+
+    //真实tps数据
+    function get() {
+        // 创建WebSocket 对象
+        var ws = new WebSocket("wss://explorer.sdag.io:20003");
+        // var ws = new WebSocket("wss://10.168.3.131:6635");
+        ws.onopen = function () {
+            //连接成功时，触发事件
+            //请求参数
+            console.log("连接中...");
+            ws.send(JSON.stringify(request["justsaying"]));
+            ws.send(JSON.stringify(request["tps"]));
+
+        }
+        //接收到服务端响应的数据时，触发事件
+        ws.onmessage = function (evt) {
+            var data = JSON.parse(evt.data);
+            console.log("收到数据", data);
+            if (data[0] == "response") {
+                if (data[1].response != undefined) {
+                    console.log(data[1].response.secs_tps);
+                    //取到tps数组
+                    tps_arr = data[1].response.secs_tps;
+                }
+            }
+        }
+        // 断开 web socket 连接成功触发事件
+        ws.onclose = function () {
+            console.log("连接已关闭...");
+        };
+    }
+
+
+    // function x10() {
+    //     tps_arr.forEach((element, index, arr) => {
+    //         arr[index] = element * 10;
+    //     });
+    // }
+
+    //对数组进行插值
+    function insert() {
+        if (tps_arr.length > 0) {
+            var tmp_arr = [];
+            var last = tps_arr[0];
+            tmp_arr.push(last);
+
+            tps_arr.splice(0, 1);//删掉第一个
+
+            tps_arr.forEach((element, index, arr) => {
+                //计算插值
+                var num = (element - last) / 10;
+                //循环插入差值
+                for (let index = 0; index < num; index++) {
+                    let n = num * index;
+                    tmp_arr.push(n);
+                }
+                //放入本值
+                tmp_arr.push(element);
+                //更新上次值
+                last = element;
+            });
+            tps = tmp_arr;
+            console.log(tps);
+        }
+    }
+
+    function getY() {
+        if (tps.length > 0) {
+            y = tps[0];
+            tps.splice(0, 1);
+            console.log(tps);
+            console.log(y);
+        } else {
+            y = 0;
+        }
+    }
+
+    $(document).ready(function () {
+        var dps = [];
+        var chart = new CanvasJS.Chart("chartContainer", {
+            exportEnabled: true,
+            title: {
+                text: "TPS"
+            },
+            axisY: {
+                includeZero: false
+            },
+            data: [{
+                type: "spline",
+                markerSize: 0,
+                dataPoints: dps
+            }]
+        });
+
+        var xVal = 0;
+        var yVal = 100;
+        var updateInterval = 100;
+        var dataLength = 60; // number of dataPoints visible at any point
+
+        var updateChart = function (count) {
+            if (tps.length > 0) {
+                count = count || 1;
+                // count is number of times loop runs to generate random dataPoints.
+                for (var j = 0; j < count; j++) {
+                    // yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
+                    yVal = y;
+                    dps.push({
+                        x: xVal,
+                        y: yVal
+                    });
+                    xVal++;
+                }
+                if (dps.length > dataLength) {
+                    dps.shift();
+                }
+                chart.render();
+            }
+        };
+
+        updateChart(dataLength);
+        setInterval(function () { updateChart() }, updateInterval);
+
+        get();
+        // //testget();
+        // //x10();
+        insert();
+
+        //每分钟取一次数据
+        setInterval(() => {
+            get();
+            //testget();
+            //x10();//数值乘以10,以便拉大间距. 显示的时候,坐标要除以 10 .
+            insert();
+        }, 100 * 30);
+
+        //每秒钟取一次值
+        setInterval(() => {
+            // get();
+            getY();
+        }, 100);
+    });
+
+
+</script>
+
+</html>
