@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "https://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+
+<head>
+    <title>Dynamic Spline HighChart Tutorial</title>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+
+    <script src="./js/highcharts.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <style>
+        body {
+            background-image: url('https://crunchify.com/bg.png');
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <br><br>
+    <div align="center">
+        <h1>TPS demo</h1>
+    </div>
+    <br><br>
+
+    <div id="container" style="min-width: 728px; height: 400px; margin: 0 auto"></div>
+
+    <div align="center">
+        <button type="button" class="btn btn-primary" id="run">run tps</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var chart;
+            var tps = [];//用于获得tps数据
+            var tps_list_to_data = [];//用于给data的排队数据
+            var num = 30; //每屏显示数量
+            var loop = 1000;//多久增加一个数据
+            var min = 0;
+            var max = 500;
+
+            var ymax = 900;
+
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+
+            $("#run").click(function () {
+                $("#run").attr('disabled', true);
+                $.post("https://explorer.sdag.io:60003", function (result) {
+                    console.log(result);
+                });
+                setTimeout(() => {
+                    $("#run").attr('disabled', false);
+                }, 1000 * 10);
+            });
+
+            //第一次装载 num 的数据
+            var first_data = [];
+
+            function load_first() {
+                console.log("first");
+                load_data(function () {
+                    console.log("aaa")
+                    var time = (new Date()).getTime();
+                    for (var i = num; i > 0; i--) {
+                        value = tps_list_to_data[0];//取第一个
+                        tps_list_to_data.shift();//删掉第一个
+                        first_data.push({
+                            x: time - i * 1000,
+                            y: value
+                        });
+                    }
+                    $('#container').highcharts({
+                        chart: {
+                            type: 'spline',
+                            animation: true,
+                            // animation: Highcharts.svg, // don't animate in old IE
+                            // marginRight: 10,
+                            events: {
+                                load: function () {
+                                    var series = this.series[0];
+                                    setInterval(function () {
+                                        series.addPoint(next(), true, true);
+                                        console.log(series.data);
+                                    }, loop);
+                                }
+                            }
+                        },
+                        title: {
+                            text: 'TPS demo'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            },
+                            tickPositions: (function () {
+                                var arr = [];
+                                var s = ymax / 5
+                                for (let index = 0; index <= 5; index++) {
+                                    arr.push(index * s);
+                                }
+                                return arr
+                            })(),
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                return '<b>'
+                                    + this.series.name
+                                    + '</b><br/>'
+                                    + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x)
+                                    + '<br/>'
+                                    + Highcharts.numberFormat(this.y, 2);
+                            }
+                        },
+                        series: [
+                            {
+                                name: 'TPS',
+                                data: first_data
+                            }
+                        ]
+                    });
+                });
+
+            }
+
+            var request = [];
+            var tag = 1;
+            request["heartbeat"] = [
+                "request",
+                {
+                    command: "heartbeat",
+                    tag: tag.toString()
+                }
+            ]
+
+            request["justsaying"] = [
+                "justsaying",
+                {
+                    "subject": "version",
+                    "body": {
+                        "protocol_version": "1.0",
+                        "alt": "1",
+                        "library": "rust-sdag",
+                        "library_version": "rust-sdag-hub",
+                        "program": "rust-sdag-hub",
+                        "program_version": "1.0"
+                    }
+                }
+            ]
+
+            request["balance"] = [
+                "request",
+                {
+                    command: "get_balance",
+                    params: "5YJKYU5NFWEUJAO4M2WNR4O3W5Z62ZYO",
+                    tag: tag.toString()
+                }
+            ]
+
+            request["tps"] = [
+                "request",
+                {
+                    command: "get_tps",
+                    tag: tag.toString()
+                }
+            ]
+
+            //获取数据
+            function load_data(cb) {
+                console.log("load data");
+                // 创建WebSocket 对象
+                var ws = new WebSocket("wss://explorer.sdag.io:20003");
+
+                // var ws = new WebSocket("wss://10.168.3.131:6635");
+                ws.onopen = function () {
+                    //连接成功时，触发事件
+                    //请求参数
+                    console.log("连接中...");
+                    ws.send(JSON.stringify(request["justsaying"]));
+                    ws.send(JSON.stringify(request["tps"]));
+
+                }
+                //接收到服务端响应的数据时，触发事件
+                ws.onmessage = function (evt) {
+                    var data = JSON.parse(evt.data);
+                    console.log("收到数据", data);
+                    if (data[0] == "response") {
+                        if (data[1].response != undefined) {
+                            console.log(data[1].response.secs_tps);
+                            //取到tps数组
+                            tps = data[1].response.secs_tps;
+                            tps_list_to_data = [];
+                            tps.forEach(element => {
+                                tps_list_to_data.push(element);
+                            });
+
+
+                            if (cb) {
+                                cb();
+                            }
+
+                        }
+                    }
+                }
+                // 断开 web socket 连接成功触发事件
+                ws.onclose = function () {
+                    console.log("连接已关闭...");
+                };
+            }
+
+            //获得下一个数据
+            function next() {
+                var x = (new Date()).getTime();
+                var y = 0;
+                if (tps_list_to_data.length > 0) {
+                    var value = tps_list_to_data[0];//取第一个
+                    tps_list_to_data.shift();//删掉第一个
+                    if (tps_list_to_data.length < 30) {
+                        //如果数据小于30,重新获取数据.
+                        load_data();
+                    }
+                    y = value;
+                }
+                console.log(tps_list_to_data);
+                return [x, y];
+            }
+
+            load_first();
+
+
+        });
+    </script>
+</body>
+
+</html>
