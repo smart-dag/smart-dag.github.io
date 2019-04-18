@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="./style.css">
+	<script src="../assets/js/jquery-2.2.3.min.js"></script>
+	<style>
+		.page {
+			width: 100%;
+			background: #F0F0F0;
+			padding-top: 100px;
+		}
+	</style>
+	<title>SDAG 周报</title>
+</head>
+
+<body>
+	<div class="page">
+		<div class="box">
+			<h1>月报</h1>
+			<ul class="event_year">
+				<li class="current" for="201904"><label>2019-04</label></li>
+				<li for="201903"><label>2019-03</label></li>
+
+			</ul>
+
+			<ul class="event_list">
+				<div>
+					<h3 id="201904">2019-04</h3>
+					<li>
+						<span>第1周</span>
+						<p>
+							<span>KV store功能性修复</span>
+							<span>链上单元超过100万+</span>
+							<span>sdag.js加入消息签名</span>
+							<span>sdagwallet.js功能性增强</span>
+							<span>移动端钱包完成</span>
+						</p>
+					</li>
+					<li>
+						<span>第2周</span>
+						<p>
+							<span>Docker新版发布</span>
+							<span>消息推送</span>
+							<span>hub实现订阅通知</span>
+							<span>修复sdagwallet.js转账text不能上链的bug</span>
+							<span>全局状态落库</span>
+						</p>
+					</li>
+					<li>
+						<span>第3周</span>
+						<p>
+							<span>解决了sdag.js于websocket通信兼容问题</span>
+							<span>app wallet基本功能实现</span>
+							<span>官网多语言功能实现</span>
+							<span>jssdk全面更新</span>
+							<span>主链单元落库</span>
+							<span>优化witness</span>
+							<span>测试witness新算法</span>
+							<span>完善内存回收算法</span>
+							<span>修复了数据死锁的问题</span>
+							<span>链数据跑到1000万+</span>
+						</p>
+					</li>
+					<li>
+						<span>第4周</span>
+						<p>
+							<span>sdagwallet.js地址验证(计划)</span>
+							<span>chrome扩展钱包(计划)</span>
+							<span>sdk更新(计划)</span>
+						</p>
+					</li>
+				</div>
+			</ul>
+			<ul class="event_list">
+				<div>
+					<h3 id="201904">2019-03</h3>
+					<li>
+						<span>3月</span>
+						<p><span>app wallet基本功能实现</span></p>
+					</li>
+				</div>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<script>
+		$(function () {
+			$('.event_year>li').click(function () {
+				$('.event_year>li').removeClass('current');
+				$(this).addClass('current');
+				var year = $(this).attr('for');
+				console.log(year);
+				$('#' + year).parent().prevAll('div').slideUp(800);
+				$('#' + year).parent().slideDown(800).nextAll('div').slideDown(800);
+			});
+		});
+	</script>
+	<div style="text-align:center;clear:both">
+		<p><a href="http://sdag.io" target="_blank">sdag.io</a></p>
+	</div>
+</body>
+
+</html>
