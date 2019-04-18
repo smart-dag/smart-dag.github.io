@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "https://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+
+<head>
+    <title>Dynamic Spline HighChart Tutorial</title>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+
+    <script src="./js/highcharts.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <style>
+        body {
+            background-image: url('https://crunchify.com/bg.png');
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <br><br>
+    <div align="center">
+        <h1>TPS demo</h1>
+    </div>
+    <br><br>
+
+    <div id="container" style="min-width: 728px; height: 400px; margin: 0 auto"></div>
+
+    <div align="center">
+        <button type="button" class="btn btn-primary" id="run">run tps</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+
+
+
+
+
+
+            var chart;
+
+            var num = 30; //每屏显示数量
+            var loop = 1000;//多久增加一个数据
+            var min = 0;
+            var max = 500;
+
+            var ymax = 12000;
+
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+
+            $("#run").click(function () {
+                $("#run").attr('disabled', true);
+                max = 8000;
+                min = 3000;
+                setTimeout(() => {
+                    $("#run").attr('disabled', false);
+                    min = 0;
+                    max = 500;
+                }, 1000 * 10);
+            });
+
+            function next() {
+                var x = (new Date()).getTime();
+                var y = min + Math.random() * max;
+                if (y > ymax) {
+                    v = ymax - 200;
+                }
+                console.log(y);
+                return [x, y];
+            }
+
+            var first_data = (function () {
+                var data = [], time = (new Date()).getTime();
+                for (let index = num; index > 0; index--) {
+                    var y = min + Math.random() * max;
+                    if (y > ymax) {
+                        v = ymax;
+                    }
+                    data.push({
+                        x: time - index * 1000,
+                        y: y
+                    });
+                }
+                return data;
+            })();
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline',
+                    animation: true,
+                    // animation: Highcharts.svg, // don't animate in old IE
+                    // marginRight: 10,
+                    events: {
+                        load: function () {
+                            var series = this.series[0];
+                            setInterval(function () {
+                                series.addPoint(next(), true, true);
+                                console.log(series.data);
+                            }, loop);
+                        }
+                    }
+                },
+                title: {
+                    text: 'TPS demo'
+                },
+                xAxis: {
+                    type: 'datetime',
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    tickPositions: (function () {
+                        var arr = [];
+                        var s = ymax / 5
+                        for (let index = 0; index <= 5; index++) {
+                            arr.push(index * s);
+                        }
+                        return arr
+                    })(),
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>'
+                            + this.series.name
+                            + '</b><br/>'
+                            + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x)
+                            + '<br/>'
+                            + Highcharts.numberFormat(this.y, 2);
+                    }
+                },
+                series: [
+                    {
+                        name: 'TPS',
+                        data: first_data
+                    }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

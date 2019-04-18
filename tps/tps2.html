@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>TPS</title>
+    <script src="./js/echarts.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" style="width: 100%;height:400px;"></div>
+    <button type="button" class="btn btn-primary" id="run">run tps</button>
+</body>
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    function randomData() {
+        value = Math.random() * 5000;
+        return Math.round(value);
+    }
+
+    var tps = [];//用于获得tps数据
+
+    var tps_list_to_data = [];//用于给data的排队数据
+
+    var data = [];
+
+    var x_num = 10;//x轴分为多少份
+
+    var loop = 100;//多久循环一次 单位毫秒
+
+    var ymax = 800;
+
+    //第一次装载 x_num 的数据
+    function load_first() {
+        load_data();
+        for (var i = 0; i < x_num; i++) {
+            value = tps_list_to_data[0];//取第一个
+            tps_list_to_data.shift();//删掉第一个
+            data.push(value);
+        }
+    }
+
+    //wss
+    var request = [];
+    var tag = 1;
+    request["heartbeat"] = [
+        "request",
+        {
+            command: "heartbeat",
+            tag: tag.toString()
+        }
+    ]
+
+    request["justsaying"] = [
+        "justsaying",
+        {
+            "subject": "version",
+            "body": {
+                "protocol_version": "1.0",
+                "alt": "1",
+                "library": "rust-sdag",
+                "library_version": "rust-sdag-hub",
+                "program": "rust-sdag-hub",
+                "program_version": "1.0"
+            }
+        }
+    ]
+
+    request["balance"] = [
+        "request",
+        {
+            command: "get_balance",
+            params: "5YJKYU5NFWEUJAO4M2WNR4O3W5Z62ZYO",
+            tag: tag.toString()
+        }
+    ]
+
+    request["tps"] = [
+        "request",
+        {
+            command: "get_tps",
+            tag: tag.toString()
+        }
+    ]
+
+    //获取数据
+    function load_data() {
+        // 创建WebSocket 对象
+        var ws = new WebSocket("wss://explorer.sdag.io:20003");
+        // var ws = new WebSocket("wss://10.168.3.131:6635");
+        ws.onopen = function () {
+            //连接成功时，触发事件
+            //请求参数
+            console.log("连接中...");
+            ws.send(JSON.stringify(request["justsaying"]));
+            ws.send(JSON.stringify(request["tps"]));
+
+        }
+        //接收到服务端响应的数据时，触发事件
+        ws.onmessage = function (evt) {
+            var data = JSON.parse(evt.data);
+            console.log("收到数据", data);
+            if (data[0] == "response") {
+                if (data[1].response != undefined) {
+                    console.log(data[1].response.secs_tps);
+                    //取到tps数组
+                    tps = data[1].response.secs_tps;
+                    tps_list_to_data = [];
+                    tps.forEach(element => {
+                        tps_list_to_data.push(element);
+                    });
+                }
+            }
+        }
+        // 断开 web socket 连接成功触发事件
+        ws.onclose = function () {
+            console.log("连接已关闭...");
+        };
+        // for (var i = 0; i < x_num; i++) {
+        //     tps.push(randomData());
+        // }
+        // tps.forEach(element => {
+        //     tps_list_to_data.push(element);
+        // });
+    }
+
+    //获得下一个数据
+    function next() {
+        if (tps_list_to_data.length > 0) {
+            value = tps_list_to_data[0];//取第一个
+            tps_list_to_data.shift();//删掉第一个
+            if (tps_list_to_data.length < 30) {
+                //如果数据小于30,重新获取数据.
+                load_data();
+            }
+            console.log(value);
+            return value;
+        } else {
+            return 0;
+        }
+    }
+
+
+    //初始化
+    function init() {
+
+        load_first();
+
+        //塞进排列的数据,以呈现动画效果.
+        setInterval(function () {
+            //去掉一个
+            data.shift();
+            //增加一个
+            data.push(next());
+            myChart.setOption({
+                series: [{
+                    data: data
+                }]
+            });
+        }, loop);
+    }
+
+    //x轴坐标 只显示10秒,意味着显示速度可以提升10倍
+    var x = [];
+    for (let index = 0; index < x_num; index++) {
+        x.push("");
+    }
+
+    option = {
+        title: {
+            text: 'TPS demo'
+        },
+        animation: false,
+
+        xAxis: {
+            type: 'category',
+            data: x
+        },
+        yAxis: {
+            max: ymax,
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            }
+        },
+        series: [{
+            // name: 'name',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: true,
+            data: data,
+            smooth: true
+        }]
+    };
+
+
+
+    $(document).ready(function () {
+        init();
+
+        console.log(data);
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        $("#run").click(function () {
+            $.post("https://explorer.sdag.io:60003", function (result) {
+                console.log(result);
+            });
+        });
+    });
+
+</script>
+
+</html>
