@@ -43,6 +43,8 @@
 
     var loop = 100;//多久循环一次 单位毫秒
 
+    var ymax = 800;
+
     //第一次装载 x_num 的数据
     function load_first() {
         load_data();
@@ -184,13 +186,13 @@
             text: 'TPS demo'
         },
         animation: false,
-        
+
         xAxis: {
             type: 'category',
             data: x
         },
         yAxis: {
-            max:12000,
+            max: ymax,
             type: 'value',
             boundaryGap: [0, '100%'],
             splitLine: {
