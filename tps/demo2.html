@@ -3,21 +3,38 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>TPS</title>
     <script src="./js/echarts.min.js"></script>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+    </style>
 </head>
 
 <body>
     <div id="main" style="width: 100%;height:400px;"></div>
+    <button type="button" class="btn btn-primary" id="run">run tps</button>
 </body>
 <script type="text/javascript">
 
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
-
+    var min = 0;
+    var max = 500;
+    var ymax = 12000;
     function randomData() {
-        value = Math.random() * 5000;
+        value = min + Math.random() * max;
+        if (value > max) {
+            value = max;
+        }
         return Math.round(value);
     }
 
@@ -41,9 +58,10 @@
         }
     }
 
+
     //获取数据
     function load_data() {
-        for (var i = 0; i < x_num; i++) {
+        for (var i = 0; i < x_num * 1.5; i++) {
             tps.push(randomData());
         }
         tps.forEach(element => {
@@ -53,14 +71,18 @@
 
     //获得下一个数据
     function next() {
-        value = tps_list_to_data[0];//取第一个
-        tps_list_to_data.shift();//删掉第一个
-        if (tps_list_to_data.length < 30) {
-            //如果数据小于30,重新获取数据.
-            load_data();
+        if (tps_list_to_data.length > 0) {
+            value = tps_list_to_data[0];//取第一个
+            tps_list_to_data.shift();//删掉第一个
+            if (tps_list_to_data.length < 30) {
+                //如果数据小于30,重新获取数据.
+                load_data();
+            }
+            console.log(value);
+            return value;
+        } else {
+            return 0;
         }
-        console.log(value);
-        return value;
     }
 
 
@@ -94,23 +116,13 @@
             text: 'TPS demo'
         },
         animation: false,
-        tooltip: {
-            trigger: 'axis',
-            formatter: function (params) {
-                params = params[0];
-                var date = new Date(params.name);
-                // return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
-                return params.value[1];
-            },
-            axisPointer: {
-                animation: true
-            }
-        },
+
         xAxis: {
             type: 'category',
             data: x
         },
         yAxis: {
+            max: ymax,
             type: 'value',
             boundaryGap: [0, '100%'],
             splitLine: {
@@ -127,13 +139,33 @@
         }]
     };
 
-    init();
 
-    console.log(data);
 
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    $(document).ready(function () {
+        init();
 
+        console.log(data);
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        $("#run").click(function () {
+            console.log(tps_list_to_data);
+            $("#run").attr('disabled', true);
+            tps_list_to_data = [];
+            for (let index = 0; index < x_num * 3; index++) {
+                var value = 4000 + Math.random() * 12000;
+                if (value > 11000) {
+                    value = 11000;
+                    value -= Math.random() * 2000;
+                }
+                tps_list_to_data.push(value);
+            }
+            console.log(tps_list_to_data);
+            setTimeout(() => {
+                $("#run").attr('disabled', false);
+            }, 1000 * 3);
+        });
+    });
 
 </script>
 

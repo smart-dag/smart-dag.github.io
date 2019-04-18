@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>TPS demo</title>
-    <script src="./js/canvasjs.min.js"></script>
+    <title>TPS</title>
+    <script src="./js/echarts.min.js"></script>
     <script type="text/javascript" src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
@@ -20,221 +20,153 @@
 </head>
 
 <body>
-    <div id="chartContainer" style="height: 370px; width:100%;"></div>
+    <div id="main" style="width: 100%;height:400px;"></div>
     <button type="button" class="btn btn-primary" id="run">run tps</button>
 </body>
 <script type="text/javascript">
-    var request = [];
-    var tag = 1;
-    //原始的tps
-    var tps_arr = [];
-    //平滑的tps(经过插值的)
-    var tps = [];
-    var y = 0;
 
-    request["heartbeat"] = [
-        "request",
-        {
-            command: "heartbeat",
-            tag: tag.toString()
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var min = 0;
+    var max = 500;
+    var ymax = 12000;
+    function randomData() {
+        value = min + Math.random() * max;
+        if (value > max) {
+            value = max;
         }
-    ]
+        return Math.round(value);
+    }
 
-    request["justsaying"] = [
-        "justsaying",
-        {
-            "subject": "version",
-            "body": {
-                "protocol_version": "1.0",
-                "alt": "1",
-                "library": "rust-sdag",
-                "library_version": "rust-sdag-hub",
-                "program": "rust-sdag-hub",
-                "program_version": "1.0"
+    var tps = [];//用于获得tps数据
+
+    var tps_list_to_data = [];//用于给data的排队数据
+
+    var data = [];
+
+    var x_num = 10;//x轴分为多少份
+
+    var loop = 100;//多久循环一次 单位毫秒
+
+    //第一次装载 x_num 的数据
+    function load_first() {
+        load_data();
+        for (var i = 0; i < x_num; i++) {
+            value = tps_list_to_data[0];//取第一个
+            tps_list_to_data.shift();//删掉第一个
+            data.push(value);
+        }
+    }
+
+
+    //获取数据
+    function load_data() {
+        for (var i = 0; i < x_num * 1.5; i++) {
+            tps.push(randomData());
+        }
+        tps.forEach(element => {
+            tps_list_to_data.push(element);
+        });
+    }
+
+    //获得下一个数据
+    function next() {
+        if (tps_list_to_data.length > 0) {
+            value = tps_list_to_data[0];//取第一个
+            tps_list_to_data.shift();//删掉第一个
+            if (tps_list_to_data.length < 30) {
+                //如果数据小于30,重新获取数据.
+                load_data();
             }
-        }
-    ]
-
-    request["balance"] = [
-        "request",
-        {
-            command: "get_balance",
-            params: "5YJKYU5NFWEUJAO4M2WNR4O3W5Z62ZYO",
-            tag: tag.toString()
-        }
-    ]
-
-    request["tps"] = [
-        "request",
-        {
-            command: "get_tps",
-            tag: tag.toString()
-        }
-    ]
-
-    //模拟tps数据
-    function testget() {
-        tps_arr = [];
-        for (let index = 0; index < 60; index++) {
-            var num = Math.round(5 + Math.random() * 5);
-            tps_arr.push(num);
-        }
-        console.log(tps_arr);
-    }
-
-    //真实tps数据
-    function get() {
-        // 创建WebSocket 对象
-        var ws = new WebSocket("wss://explorer.sdag.io:20003");
-        // var ws = new WebSocket("wss://10.168.3.131:6635");
-        ws.onopen = function () {
-            //连接成功时，触发事件
-            //请求参数
-            console.log("连接中...");
-            ws.send(JSON.stringify(request["justsaying"]));
-            ws.send(JSON.stringify(request["tps"]));
-
-        }
-        //接收到服务端响应的数据时，触发事件
-        ws.onmessage = function (evt) {
-            var data = JSON.parse(evt.data);
-            console.log("收到数据", data);
-            if (data[0] == "response") {
-                if (data[1].response != undefined) {
-                    console.log(data[1].response.secs_tps);
-                    //取到tps数组
-                    tps_arr = data[1].response.secs_tps;
-                }
-            }
-        }
-        // 断开 web socket 连接成功触发事件
-        ws.onclose = function () {
-            console.log("连接已关闭...");
-        };
-    }
-
-
-    // function x10() {
-    //     tps_arr.forEach((element, index, arr) => {
-    //         arr[index] = element * 10;
-    //     });
-    // }
-
-    //对数组进行插值
-    function insert() {
-        if (tps_arr.length > 0) {
-            var tmp_arr = [];
-            var last = tps_arr[0];
-            tmp_arr.push(last);
-
-            tps_arr.splice(0, 1);//删掉第一个
-
-            tps_arr.forEach((element, index, arr) => {
-                //计算插值
-                var num = (element - last) / 10;
-                //循环插入差值
-                for (let index = 0; index < num; index++) {
-                    let n = num * index;
-                    tmp_arr.push(n);
-                }
-                //放入本值
-                tmp_arr.push(element);
-                //更新上次值
-                last = element;
-            });
-            tps = tmp_arr;
-            console.log(tps);
-        }
-        //tps = tps_arr;
-    }
-
-    function getY() {
-        if (tps.length > 0) {
-            y = tps[0];
-            tps.splice(0, 1);
-            console.log(tps);
-            console.log(y);
+            console.log(value);
+            return value;
         } else {
-            y = 0;
+            return 0;
         }
     }
 
 
-    var loop = 30;
-    $(document).ready(function () {
-        var dps = [];
-        var chart = new CanvasJS.Chart("chartContainer", {
-            exportEnabled: true,
-            title: {
-                text: "TPS"
-            },
-            axisY: {
-                includeZero: false
-            },
-            data: [{
-                type: "spline",
-                markerSize: 0,
-                dataPoints: dps,
-                markerSize: 0,
-                dataPoints: dps,
-                markerSize: 5,
-                lineThickness: 2,
-            }]
-        });
+    //初始化
+    function init() {
 
-        var xVal = 0;
-        var yVal = 0;
-        var updateInterval = loop;
-        var dataLength = 500; // number of dataPoints visible at any point
+        load_first();
 
-        var updateChart = function (count) {
-            if (tps.length > 0) {
-                count = count || 1;
-                // count is number of times loop runs to generate random dataPoints.
-                for (var j = 0; j < count; j++) {
-                    // yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-                    yVal = y;
-                    dps.push({
-                        x: xVal,
-                        y: yVal
-                    });
-                    xVal++;
-                }
-                if (dps.length > dataLength) {
-                    dps.shift();
-                }
-                chart.render();
-            }
-        };
-
-        updateChart(dataLength);
-        setInterval(function () { updateChart() }, updateInterval);
-
-        get();
-        // //testget();
-        // //x10();
-        insert();
-
-        //每分钟取一次数据
-        setInterval(() => {
-            get();
-            //testget();
-            //x10();//数值乘以10,以便拉大间距. 显示的时候,坐标要除以 10 .
-            insert();
-        }, loop * 30);
-
-        //每秒钟取一次值
-        setInterval(() => {
-            // get();
-            getY();
+        //塞进排列的数据,以呈现动画效果.
+        setInterval(function () {
+            //去掉一个
+            data.shift();
+            //增加一个
+            data.push(next());
+            myChart.setOption({
+                series: [{
+                    data: data
+                }]
+            });
         }, loop);
-    });
+    }
 
-    $("#run").click(function () {
-        $.post("https://explorer.sdag.io:60003", function (result) {
-            console.log(result);
+    //x轴坐标 只显示10秒,意味着显示速度可以提升10倍
+    var x = [];
+    for (let index = 0; index < x_num; index++) {
+        x.push("");
+    }
+
+    option = {
+        title: {
+            text: 'TPS demo'
+        },
+        animation: false,
+
+        xAxis: {
+            type: 'category',
+            data: x
+        },
+        yAxis: {
+            max: ymax,
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            }
+        },
+        series: [{
+            // name: 'name',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: true,
+            data: data,
+            smooth: true
+        }]
+    };
+
+
+
+    $(document).ready(function () {
+        init();
+
+        console.log(data);
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        $("#run").click(function () {
+            console.log(tps_list_to_data);
+            $("#run").attr('disabled', true);
+            tps_list_to_data = [];
+            for (let index = 0; index < x_num * 3; index++) {
+                var value = 4000 + Math.random() * 12000;
+                if (value > 11000) {
+                    value = 11000;
+                    value -= Math.random() * 2000;
+                }
+                tps_list_to_data.push(value);
+            }
+            console.log(tps_list_to_data);
+            setTimeout(() => {
+                $("#run").attr('disabled', false);
+            }, 1000 * 3);
         });
     });
+
 </script>
 
 </html>
