@@ -3,13 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
-    <script src="js/canvasjs.min.js"></script>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <title>TPS demo</title>
+    <script src="./js/canvasjs.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+    </style>
 </head>
 
 <body>
     <div id="chartContainer" style="height: 370px; width:100%;"></div>
+    <button type="button" class="btn btn-primary" id="run">run tps</button>
 </body>
 <script type="text/javascript">
     var request = [];
@@ -133,6 +145,7 @@
             tps = tmp_arr;
             console.log(tps);
         }
+        //tps = tps_arr;
     }
 
     function getY() {
@@ -146,6 +159,8 @@
         }
     }
 
+
+    var loop = 30;
     $(document).ready(function () {
         var dps = [];
         var chart = new CanvasJS.Chart("chartContainer", {
@@ -159,14 +174,18 @@
             data: [{
                 type: "spline",
                 markerSize: 0,
-                dataPoints: dps
+                dataPoints: dps,
+                markerSize: 0,
+                dataPoints: dps,
+                markerSize: 5,
+                lineThickness: 2,
             }]
         });
 
         var xVal = 0;
-        var yVal = 100;
-        var updateInterval = 100;
-        var dataLength = 60; // number of dataPoints visible at any point
+        var yVal = 0;
+        var updateInterval = loop;
+        var dataLength = 500; // number of dataPoints visible at any point
 
         var updateChart = function (count) {
             if (tps.length > 0) {
@@ -202,16 +221,20 @@
             //testget();
             //x10();//数值乘以10,以便拉大间距. 显示的时候,坐标要除以 10 .
             insert();
-        }, 100 * 30);
+        }, loop * 30);
 
         //每秒钟取一次值
         setInterval(() => {
             // get();
             getY();
-        }, 100);
+        }, loop);
     });
 
-
+    $("#run").click(function () {
+        $.post("https://explorer.sdag.io:60003", function (result) {
+            console.log(result);
+        });
+    });
 </script>
 
 </html>

@@ -64,7 +64,7 @@
     function testget() {
         tps_arr = [];
         for (let index = 0; index < 60; index++) {
-            var num = Math.round(5 + Math.random() * 5);
+            var num = Math.round(30 + Math.random() * 1200);
             tps_arr.push(num);
         }
         console.log(tps_arr);
@@ -121,7 +121,18 @@
             var num = (element - last) / 10;
             //循环插入差值
             for (let index = 0; index < num; index++) {
+                //平均值
                 let n = num * index;
+                //随机值
+                var x = Math.round(last + Math.random() * element);
+                if (Math.round(Math.random() * 1) == 0) {
+                    n += x;//看起来凌乱一些.
+                } else {
+                    n -= x;//看起来凌乱一些.
+                }
+                if (n < 0) {
+                    n = 0;
+                }
                 tmp_arr.push(n);
             }
             //放入本值
@@ -130,6 +141,9 @@
             last = element;
         });
         tps = tmp_arr;
+        // tps.forEach((element, index, arr) => {
+        //     arr[index] = element * 0.1;
+        // });
         console.log(tps);
     }
 
@@ -139,6 +153,7 @@
         // tps_arr.splice(0, 1);
         if (tps.length > 0) {
             y = tps[0];
+            // y = y * 1000;
             tps.splice(0, 1);
             console.log(tps);
             console.log(y);
@@ -159,16 +174,19 @@
                 includeZero: false
             },
             data: [{
-                type: "spline",
+                type: "line",
                 markerSize: 0,
-                dataPoints: dps
+                dataPoints: dps,
+                //markerSize: 5,
+                lineThickness: 2,
             }]
         });
 
+        var loop = 30;
         var xVal = 0;
-        var yVal = 100;
-        var updateInterval = 100;
-        var dataLength = 60; // number of dataPoints visible at any point
+        var yVal = 0;
+        var updateInterval = loop;
+        var dataLength = 500; // number of dataPoints visible at any point
 
         var updateChart = function (count) {
             count = count || 1;
@@ -205,13 +223,13 @@
             testget();
             //x10();//数值乘以10,以便拉大间距. 显示的时候,坐标要除以 10 .
             insert();
-        }, 100 * 30);
+        }, loop * 30);
 
         //每秒钟取一次值
         setInterval(() => {
             // get();
             getY();
-        }, 100);
+        }, loop);
     });
 
 
