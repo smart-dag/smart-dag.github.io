@@ -28,7 +28,7 @@ body {
   color: #333;
   padding: 2px;
   white-space: pre-wrap;
-  word-spacing: -2px;
+  word-spacing: 2px;
 }
 
 .box-icon-left .icon-box-icon {
