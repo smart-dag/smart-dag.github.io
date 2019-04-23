@@ -41,9 +41,10 @@
     var hub = "ws://10.168.1.224:6625"
     var ws = new WebSocket(hub);
 
-    //
+    // wss 
     var request = [];
     var tag = 1;
+
     request["heartbeat"] = [
         "response",
         {
@@ -93,9 +94,6 @@
             tag: "0"
         }
     ]
-    //
-
-
 
     //获得一分钟的tps峰值
     function _get60s(cb) {
