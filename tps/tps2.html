@@ -47,12 +47,16 @@
 
     //第一次装载 x_num 的数据
     function load_first() {
-        load_data();
-        for (var i = 0; i < x_num; i++) {
-            value = tps_list_to_data[0];//取第一个
-            tps_list_to_data.shift();//删掉第一个
-            data.push(value);
-        }
+        load_data(function () {
+            if (tps_list_to_data.length > x_num) {
+                for (var i = 0; i < x_num; i++) {
+                    value = tps_list_to_data[0].tps;//取第一个
+                    tps_list_to_data.shift();//删掉第一个
+                    data.push(value);
+                }
+            }
+        });
+
     }
 
     //wss
@@ -93,16 +97,16 @@
     request["tps"] = [
         "request",
         {
-            command: "get_tps",
+            command: "get_current_tps",
             tag: tag.toString()
         }
     ]
 
     //获取数据
-    function load_data() {
+    function load_data(cb) {
         // 创建WebSocket 对象
         var ws = new WebSocket("wss://explorer.sdag.io:20003");
-        // var ws = new WebSocket("wss://10.168.3.131:6635");
+        // var ws = new WebSocket("ws://10.168.3.131:6615");
         ws.onopen = function () {
             //连接成功时，触发事件
             //请求参数
@@ -117,13 +121,37 @@
             console.log("收到数据", data);
             if (data[0] == "response") {
                 if (data[1].response != undefined) {
-                    console.log(data[1].response.secs_tps);
-                    //取到tps数组
+                    console.log(data[1].response);
+
+                    //取到60秒的tps数组
                     tps = data[1].response.secs_tps;
+
+                    //第一个时间戳
+                    var timestamp = data[1].response.timestamp;
+
+                    timestamp += 1;
+
                     tps_list_to_data = [];
+
                     tps.forEach(element => {
-                        tps_list_to_data.push(element);
+                        timestamp -= 1;
+                        tps_list_to_data.push({
+                            tps: element,
+                            timestamp: timestamp
+                        });
                     });
+
+                    //去掉重复项目
+                    var obj = {};
+                    tps_list_to_data = tps_list_to_data.reduce(function (item, next) {
+                        obj[next.key] ? '' : obj[next.key] = true && item.push(next);
+                        return item;
+                    }, []);
+
+                    if (cb) {
+                        cb();
+                    }
+
                 }
             }
         }
@@ -141,14 +169,15 @@
 
     //获得下一个数据
     function next() {
+        console.log(tps_list_to_data);
         if (tps_list_to_data.length > 0) {
-            value = tps_list_to_data[0];//取第一个
+            value = tps_list_to_data[0].tps;//取第一个
             tps_list_to_data.shift();//删掉第一个
             if (tps_list_to_data.length < 30) {
                 //如果数据小于30,重新获取数据.
                 load_data();
             }
-            console.log(value);
+            
             return value;
         } else {
             return 0;
