@@ -30,7 +30,22 @@
 </body>
 <script type="text/javascript">
 
-    function randomData(min, max) {
+    var globle_index = 0;//对排队显示的points做一个序列
+
+    var min = 0;
+    var max = 20;
+
+    var canvas_width = 600;
+    var canvas_height = 100;
+
+    var point_num = 3;//每屏显示x个点
+
+    var width = 600 / point_num;//点和点之间的宽度
+
+    //循环时间
+    var loop_time = canvas_width / width;
+
+    function randomData() {
         value = min + Math.random() * max;
         if (value > max) {
             value = max;
@@ -40,16 +55,21 @@
 
     var points = [];//用于显示tps的点，最开始是一分钟
 
-    var loop = true;
+    var loop = false;
+
+
 
     //获得一分钟的tps峰值
-    function get60s(cb) {
+    function _get60s(cb) {
+        //类似一个控制平滑绘制的锁，锁定。
+        loop = false;
         //模拟hub产生的数据
+        console.log("geting data...");
         timestamp = Date.parse(new Date()) / 1000;
         var tps = [];
 
-        for (let index = 0; index < 60; index++) {
-            var value = randomData(5, 95);
+        for (let index = 0; index < point_num * 2; index++) {
+            var value = randomData();
             tps.push(value);
         }
 
@@ -62,53 +82,72 @@
     }
 
     //tps的峰值数组，转变为包含时间戳的对象数组
-    function values_to_objs(result) {
+    function _values_to_objs(result) {
+
         var timestamp = result.timestamp + 1;
         var tps = result.secs_tps;
+
+        console.log("tps", tps);
 
         //对数据进行转换，变成60秒的对象数组。
         var tps_obj_arr = [];
         tps.forEach(element => {
+            console.log(element);
             timestamp -= 1;
+            globle_index += 1;
             tps_obj_arr.push({
+                index: globle_index,
                 value: element,
                 timestamp: timestamp
             });
         });
 
+
+
         //由于api是倒序时间，第0个是最新时间，第59是第60秒之前的时间。现在需要再次倒序，以变成正序。
-        return tps_obj_arr.reverse();
+        tps_obj_arr.reverse();
+        console.log("tps obj arr2", tps_obj_arr);
+        return tps_obj_arr;
     }
 
     //把数组对象，追加到用于显示tps曲线的points里
-    function objs_appent_to_points(objs) {
-        //类似一个控制平滑绘制的锁，锁定。
-        loop = false;
+    function _objs_appent_to_points(objs) {
+
+
+
+        console.log("原始objs");
         objs.forEach(element => {
             console.log(element);
+            points.push(element);
         });
+
+
+
+        //去掉重复
+        var obj = {};
+        points = points.reduce(function (item, next) {
+            obj[next.timestamp] ? '' : obj[next.timestamp] = true && item.push(next);
+            return item;
+        }, []);
+
+        //重新计算x，y
+
+        for (i = 0; i <= points.length - 1; i++) {
+            globle_index += 1;
+            console.log("重新计算point的xy", points);
+            // var this_x = 0 + i * width;
+            var this_x = globle_index * width;
+            var this_y = canvas_height - points[i].value;
+            points[i].x = this_x;
+            points[i].y = this_y;
+        }
+
+        console.log("updated points...", points);
+
         //打开
         loop = true;
     }
 
-
-
-
-    var timestamp = Date.parse(new Date()) / 1000;
-
-    for (let index = 0; index < 60; index++) {
-        var y = randomData(5, 95);
-        var x = index * 10;
-
-        timestamp = Date.parse(new Date()) / 1000;
-
-        points.push({
-            x: x,
-            y: y
-        });
-    }
-
-    console.log(points.length);
 
 
     var c = document.getElementById("canvas");
@@ -117,39 +156,130 @@
     // context.fillRect(0, 0, 150, 75);
     context.strokeStyle = "#f00";
 
+    //绘制曲线图
+    function _draw() {
 
-    function draw() {
-        context.clearRect(0, 0, c.width, c.height);
-        context.beginPath();
-        context.moveTo(points[0].x, points[0].y);
+        if (points.length > 0) {
+            console.log("points", points);
+            context.clearRect(0, 0, c.width, c.height);
+            context.beginPath();
 
-        for (i = 1; i < points.length - 2; i++) {
-            var ctrlPoint = {};
-            ctrlPoint.x = (points[i].x + points[i + 1].x) / 2;
-            ctrlPoint.y = (points[i].y + points[i + 1].y) / 2;
-            context.quadraticCurveTo(points[i].x, points[i].y, ctrlPoint.x, ctrlPoint.y);
+            context.font = "20px Georgia";
+
+
+            var first_point = points[0];
+            context.moveTo(first_point.x, first_point.y);
+
+            for (i = 1; i < points.length - 2; i++) {
+                var ctrlPoint = {};
+
+
+
+                var this_x = points[i].x;
+                var this_y = points[i].y;
+
+
+
+                var next_x = points[i + 1].x;
+                var next_y = points[i + 1].y;
+
+                ctrlPoint.x = (this_x + next_x) / 2;
+                ctrlPoint.y = (this_y + next_y) / 2;
+
+                context.quadraticCurveTo(this_x, this_y, ctrlPoint.x, ctrlPoint.y);
+            }
+
+            // context.fillText("current TPS: " + (100 - this_y), 20, 20);
+
+            //context.quadraticCurveTo(this_x, this_y, next_x, next_y);
+            context.stroke();
         }
 
-        context.quadraticCurveTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
-        context.stroke();
     }
 
 
 
+    // 平滑左移动
+    function move() {
+        if (loop) {
+            console.log("looping...");
+            if (points.length > 0) {
+                loop = false;
+                var tmp_arr = [];
 
+                //这个速度快
+                points.forEach(element => {
+                    element.x -= 1;
+                    if (element.x > -1 * width) {
+                        tmp_arr.push(element);
+                    }
+                });
+                points = tmp_arr;
+
+                // 这个效率不行
+                // points.map(function (element, index, arr) {
+                //     element.x -= 1;
+                //     if (element.x < (0 - width * 10)) {
+                //         points.splice(index, 1);
+                //     }
+                // });
+
+                loop = true;
+                _draw();
+            }
+        }
+        setTimeout(() => {
+            move();
+        }, loop_time);
+    }
+    // setInterval(() => {
+    //     if (loop) {
+    //         console.log("looping...")
+    //         if (points.length > 0) {
+    //             // points.forEach(element => {
+    //             //     element.x -= 1;
+    //             //     if(element.x<0){
+    //             //         points.splice()
+    //             //     }
+    //             // });
+    //             points.map(function (element, index, arr) {
+    //                 element.x -= 1;
+    //                 if (element.x < (0 - width * 10)) {
+    //                     points.splice(index, 1);
+    //                 }
+    //             });
+    //             draw();
+    //         }
+    //     }
+    // }, loop_time);
+
+    //取数据
     setInterval(() => {
-        points.forEach(element => {
-            element.x -= 1;
-        });
-        draw();
-    }, 10);
+        request();
+    }, 1000 * 2);
 
     //得到60秒的数据
-    get60s(function (result) {
-        //console.log(result);
-        var objs = values_to_objs(result);
-        //console.log(objs);
-        objs_appent_to_points(objs);
+
+    function request() {
+        _get60s(function (result) {
+            console.log("api返回的数据", result);
+            //数据变成包含时间戳的数组
+            var objs = _values_to_objs(result);
+            //添加到曲线数组
+            _objs_appent_to_points(objs);
+
+        });
+    }
+
+    request();
+    move();
+
+    document.getElementById("run").addEventListener("click", function () {
+        var def = max;
+        max = 100;
+        setTimeout(() => {
+            max = def;
+        }, 1000);
     });
 
 
