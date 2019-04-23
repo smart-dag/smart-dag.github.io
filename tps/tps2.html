@@ -41,7 +41,7 @@
 
     var x_num = 10;//x轴分为多少份
 
-    var loop = 100;//多久循环一次 单位毫秒
+    var loop = 1000;//多久循环一次 单位毫秒
 
     var ymax = 800;
 
@@ -125,7 +125,7 @@
 
                     //取到60秒的tps数组
                     tps = data[1].response.secs_tps;
-                    console.log("得到api返回的原始tps数据", tps);
+                    console.log("得到api返回的原始数据", data[1].response);
 
                     //第一个时间戳
                     var timestamp = data[1].response.timestamp;
@@ -133,24 +133,38 @@
 
                     timestamp += 1;
 
-
-
-                    tps.forEach(element => {
+                    //倒叙
+                    for (let index = tps.length; index >= 0; index--) {
                         timestamp -= 1;
+                        var value = tps[index];
                         tps_list_to_data.push({
-                            tps: element,
+                            tps: value,
                             timestamp: timestamp
                         });
-                    });
+                    }
+
+                    // var a_r_r=[1,2,3,4,5];
+                    // for (let index = a_r_r.length; index >= 0; index--) {
+                    //     var tps = a_r_r[index];
+                    //     console.log(tps)
+                    // }
+
+                    // tps.forEach(element => {
+                    //     timestamp -= 1;
+                    //     tps_list_to_data.push({
+                    //         tps: element,
+                    //         timestamp: timestamp
+                    //     });
+                    // });
 
                     console.log("排队的tps", tps_list_to_data);
 
                     //去掉重复项目
-                    // var obj = {};
-                    // tps_list_to_data = tps_list_to_data.reduce(function (item, next) {
-                    //     obj[next.key] ? '' : obj[next.key] = true && item.push(next);
-                    //     return item;
-                    // }, []);
+                    var obj = {};
+                    tps_list_to_data = tps_list_to_data.reduce(function (item, next) {
+                        obj[next.timestamp] ? '' : obj[next.timestamp] = true && item.push(next);
+                        return item;
+                    }, []);
 
                     if (cb) {
                         cb();
@@ -173,7 +187,7 @@
 
     //获得下一个数据
     function next() {
-        console.log(tps_list_to_data);
+        //console.log(tps_list_to_data);
         if (tps_list_to_data.length > 0) {
             value = tps_list_to_data[0].tps;//取第一个
             tps_list_to_data.shift();//删掉第一个
@@ -181,7 +195,7 @@
                 //如果数据小于30,重新获取数据.
                 load_data();
             }
-
+            console.log(value);
             return value;
         } else {
             return 0;
