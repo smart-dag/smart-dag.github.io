@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>TPS</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .btn {
+            margin: 20px auto;
+        }
+
+        canvas {
+            border: solid 1px #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <p>tps demo</p>
+    <canvas id="canvas"></canvas>
+</body>
+<script type="text/javascript">
+
+    var globle_index = -1;//对排队显示的points做一个序列
+    var c = document.getElementById("canvas");
+    var context = c.getContext("2d");
+
+    var canvas_width = 600;
+    var canvas_height = 150;
+    c.setAttribute("width", canvas_width);
+    c.setAttribute("height", canvas_height);
+    var point_num = 30;//每屏显示x个点
+    var width = 600 / point_num;//点和点之间的宽度
+    var loop_time = canvas_width / width;//循环时间
+    var points = [];//用于显示tps的点，最开始是一分钟
+    var loop = false;
+    var hub = "ws://10.168.1.224:6625"
+    var ws = new WebSocket(hub);
+
+    //
+    var request = [];
+    var tag = 1;
+    request["heartbeat"] = [
+        "response",
+        {
+            command: "heartbeat",
+            tag: tag.toString()
+        }
+    ]
+
+    request["justsaying"] = [
+        "justsaying",
+        {
+            "subject": "version",
+            "body": {
+                "protocol_version": "1.0",
+                "alt": "1",
+                "library": "rust-sdag",
+                "library_version": "rust-sdag-hub",
+                "program": "rust-sdag-hub",
+                "program_version": "1.0"
+            }
+        }
+    ]
+
+    request["balance"] = [
+        "request",
+        {
+            command: "get_balance",
+            params: "5YJKYU5NFWEUJAO4M2WNR4O3W5Z62ZYO",
+            tag: tag.toString()
+        }
+    ]
+
+    request["tps"] = [
+        "request",
+        {
+            command: "get_current_tps",
+            tag: tag.toString()
+        }
+    ]
+
+    request["peer_id"] = [
+        "response",
+        {
+            "response": {
+                "peer_id": "P6S3NENYHKSDF5K6G277VRP57IXN6KJ2",
+            },
+            tag: "0"
+        }
+    ]
+    //
+
+
+
+    //获得一分钟的tps峰值
+    function _get60s(cb) {
+        _load_data(cb);
+    }
+
+    //tps的峰值数组，转变为包含时间戳的对象数组
+    function _values_to_objs(result) {
+        var timestamp = result.timestamp + 1;
+        var tps = result.secs_tps;
+        console.log("tps", tps);
+        //对数据进行转换，变成60秒的对象数组。
+        var tps_obj_arr = [];
+        tps.forEach(element => {
+            console.log(element);
+            timestamp -= 1;
+            tps_obj_arr.push({
+                value: element,
+                timestamp: timestamp
+            });
+        });
+        //由于api是倒序时间，第0个是最新时间，第59是第60秒之前的时间。现在需要再次倒序，以变成正序。
+        tps_obj_arr.reverse();
+        // console.log("tps obj arr2", tps_obj_arr);
+        return tps_obj_arr;
+    }
+
+    //把数组对象，追加到用于显示tps曲线的points里
+    function _objs_appent_to_points(objs) {
+        console.log("原始objs");
+        objs.forEach(element => {
+            globle_index += 1;
+            // console.log(element);
+            // element.index = globle_index;
+            // element.x = globle_index * width;
+            // element.y = canvas_height - element.value;
+            points.push(element);
+        });
+
+        //去掉重复
+        var obj = {};
+        points = points.reduce(function (item, next) {
+            obj[next.timestamp] ? '' : obj[next.timestamp] = true && item.push(next);
+            return item;
+        }, []);
+
+        //重新计算x，y
+
+        var i = 0;
+
+        points.forEach(point => {
+            i += 1;
+            var this_x = 0 + i * width;
+
+            var this_y = point.value / 1000 * canvas_height;
+            this_y = canvas_height - this_y;
+            point.x = this_x;
+            point.y = this_y;
+        });
+        //打开
+        loop = true;
+    }
+
+    //绘制曲线图
+    function _draw() {
+
+        if (points.length > 0) {
+            context.clearRect(0, 0, c.width, c.height);
+            context.beginPath();
+            context.strokeStyle = "#f00";
+            context.font = "20px Georgia";
+            //context.fillText(points.length, 20, 20);
+            var first_point = points[0];
+            var last_point = points[points.length - 1];
+            context.moveTo(first_point.x, first_point.y);
+            for (i = 1; i < points.length - 2; i++) {
+                var this_point = points[i];
+                var next_point = points[i + 1];
+                // console.log(this_point);
+                var ctrlPoint = {};
+                var this_x = this_point.x;
+                var this_y = this_point.y;
+                var next_x = next_point.x;
+                var next_y = next_point.y;
+                ctrlPoint.x = (this_x + next_x) / 2;
+                ctrlPoint.y = (this_y + next_y) / 2;
+                context.quadraticCurveTo(this_x, this_y, ctrlPoint.x, ctrlPoint.y);
+                // points[i].x -= 1;
+                // // this_x -= 1;
+                // if (this_x < -1 * width*2) {
+                //     points.splice(i, 1);
+                //     console.log("del",points);
+                // }
+
+            }
+            // first_point.x -= 1;
+            // last_point.x -= 1;
+            // context.fillText("current TPS: " + (100 - this_y), 20, 20);
+            //context.quadraticCurveTo(this_x, this_y, next_x, next_y);
+            context.stroke();
+        }
+    }
+
+    // 平滑左移动
+    function move() {
+        if (loop) {
+            console.log("looping...");
+            if (points.length > 0) {
+                loop = false;
+                var tmp_arr = [];
+                points.forEach(element => {
+                    element.x -= 1;
+                    if (element.x > -1 * width * 2) {
+                        tmp_arr.push(element);
+                    }
+                });
+                points = tmp_arr;
+                loop = true;
+                _draw();
+            }
+        }
+        // if (points.length < point_num) {
+        //     requesthub();
+        // }
+        setTimeout(() => {
+            move();
+        }, loop_time);
+    }
+
+    function requesthub() {
+        setInterval(() => {
+            _get60s(function (result) {
+                console.log("api返回的数据", result);
+                //数据变成包含时间戳的数组
+                var objs = _values_to_objs(result);
+                //添加到曲线数组
+                _objs_appent_to_points(objs);
+
+            });
+        }, 1000 * 10);
+    }
+
+    //requesthub();
+    move();
+
+
+
+
+
+    //获取数据
+
+
+    ws.onopen = function () {
+        //连接成功时，触发事件
+        //请求参数
+        console.log("连接中...");
+        ws.send(JSON.stringify(request["justsaying"]));
+        requesthub();
+        // ws.send(JSON.stringify(request["tps"]));
+    }
+    // 断开 web socket 连接成功触发事件
+    ws.onclose = function () {
+        console.log("连接已关闭...");
+    };
+    ws.onmessage = function (evt) {
+        var data = JSON.parse(evt.data);
+        console.log("收到数据", data);
+        if (data[0] == "request") {
+            if (data[1].command == "subscribe") {
+                console.log("正在回复 peer_id");
+                ws.send(JSON.stringify(request["peer_id"]));
+            }
+            if (data[1].command == "heartbeat") {
+                console.log("正在回复 心跳包");
+                request["heartbeat"][1].tag = data[1].tag;
+                ws.send(JSON.stringify(request["heartbeat"]));
+            }
+        }
+        if (data[0] == "response") {
+            if (data[1].response != undefined) {
+                console.log("get data from hub", data[1].response);
+                //数据变成包含时间戳的数组
+                var objs = _values_to_objs(data[1].response);
+                //添加到曲线数组
+                _objs_appent_to_points(objs);
+                // if (cb) {
+                //     // _get60s(function (data[1].response)) {
+                //     //     console.log("api返回的数据", result);
+                //     //     //数据变成包含时间戳的数组
+                //     //     var objs = _values_to_objs(result);
+                //     //     //添加到曲线数组
+                //     //     _objs_appent_to_points(objs);
+                //     // });
+                //     // cb(data[1].response);
+                //     loop = true;
+                //     // setTimeout(() => {
+                //     //     ws.close();
+                //     // }, 1000);
+                // }
+            }
+        }
+    }
+
+
+    function _load_data(cb) {
+        console.log("loading data...");
+        switch (ws.readyState) {
+            case WebSocket.CONNECTING:
+                // do something
+                console.log("CONNECTING");
+                break;
+            case WebSocket.OPEN:
+                // do something
+                console.log("OPEN");
+                ws.send(JSON.stringify(request["tps"]));
+                break;
+            case WebSocket.CLOSING:
+                console.log("OPCLOSINGEN");
+                // do something
+                break;
+            case WebSocket.CLOSED:
+                console.log("CLOSED");
+                // do something
+                break;
+            default:
+                console.log("this never happens");
+                // this never happens
+                break;
+        }
+        //类似一个控制平滑绘制的锁，锁定。
+        loop = false;
+        // ws.send(JSON.stringify(request["tps"]));
+        // 创建WebSocket 对象
+        // var ws = new WebSocket("wss://explorer.sdag.io:20003");
+        // var ws = new WebSocket(hub);
+
+        // ws.onopen = function () {
+        //     //连接成功时，触发事件
+        //     //请求参数
+        //     console.log("连接中...");
+        //     ws.send(JSON.stringify(request["justsaying"]));
+        //     // ws.send(JSON.stringify(request["tps"]));
+
+        // }
+        //接收到服务端响应的数据时，触发事件
+        // ws.onmessage = function (evt) {
+        //     var data = JSON.parse(evt.data);
+        //     console.log("收到数据", data);
+        //     if (data[0] == "request") {
+        //         if (data[1].command == "subscribe") {
+        //             ws.send(JSON.stringify(request["peer_id"]));
+        //         }
+        //     }
+        //     if (data[0] == "response") {
+        //         if (data[1].response != undefined) {
+        //             console.log("get data from hub", data[1].response);
+        //             if (cb) {
+        //                 cb(data[1].response);
+        //                 loop = true;
+        //                 // setTimeout(() => {
+        //                 //     ws.close();
+        //                 // }, 1000);
+        //             }
+        //         }
+        //     }
+        // }
+        // ws.send(JSON.stringify(request["tps"]));
+    }
+
+</script>
+
+</html>

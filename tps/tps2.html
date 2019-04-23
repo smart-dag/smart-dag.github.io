@@ -105,8 +105,8 @@
     //获取数据
     function load_data(cb) {
         // 创建WebSocket 对象
-        var ws = new WebSocket("wss://explorer.sdag.io:20003");
-        // var ws = new WebSocket("ws://10.168.3.131:6615");
+        // var ws = new WebSocket("wss://explorer.sdag.io:20003");
+        var ws = new WebSocket("ws://10.168.1.224:6615");
         ws.onopen = function () {
             //连接成功时，触发事件
             //请求参数
@@ -119,6 +119,11 @@
         ws.onmessage = function (evt) {
             var data = JSON.parse(evt.data);
             console.log("收到数据", data);
+            if (data[0] == "request") {
+                if(data[1].command=="subscribe"){
+                    
+                }
+            }
             if (data[0] == "response") {
                 if (data[1].response != undefined) {
                     console.log(data[1].response);
