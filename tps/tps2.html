@@ -125,13 +125,15 @@
 
                     //取到60秒的tps数组
                     tps = data[1].response.secs_tps;
+                    console.log("得到api返回的原始tps数据", tps);
 
                     //第一个时间戳
                     var timestamp = data[1].response.timestamp;
+                    console.log("第一个时间戳", timestamp);
 
                     timestamp += 1;
 
-                    tps_list_to_data = [];
+
 
                     tps.forEach(element => {
                         timestamp -= 1;
@@ -141,12 +143,14 @@
                         });
                     });
 
+                    console.log("排队的tps", tps_list_to_data);
+
                     //去掉重复项目
-                    var obj = {};
-                    tps_list_to_data = tps_list_to_data.reduce(function (item, next) {
-                        obj[next.key] ? '' : obj[next.key] = true && item.push(next);
-                        return item;
-                    }, []);
+                    // var obj = {};
+                    // tps_list_to_data = tps_list_to_data.reduce(function (item, next) {
+                    //     obj[next.key] ? '' : obj[next.key] = true && item.push(next);
+                    //     return item;
+                    // }, []);
 
                     if (cb) {
                         cb();
@@ -177,7 +181,7 @@
                 //如果数据小于30,重新获取数据.
                 load_data();
             }
-            
+
             return value;
         } else {
             return 0;
