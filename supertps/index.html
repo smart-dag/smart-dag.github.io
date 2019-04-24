@@ -40,6 +40,7 @@
     var loop = false;
     var hub = "wss://explorer.sdag.io:20003"
     var ws = new WebSocket(hub);
+    var maxY = 100;
 
     // wss 
     var request = [];
@@ -104,6 +105,7 @@
     function _values_to_objs(result) {
         var timestamp = result.timestamp + 1;
         var tps = result.secs_tps;
+        maxY = result.max_tps;
         console.log("tps", tps);
         //对数据进行转换，变成60秒的对象数组。
         var tps_obj_arr = [];
@@ -141,18 +143,21 @@
         }, []);
 
         //重新计算x，y
+        var begin = 0;
+        if (points[0].hasOwnProperty("x")) {
+            begin = points[0].x;
+        }
 
         var i = 0;
-
         points.forEach(point => {
-            i += 1;
-            var this_x = 0 + i * width;
-
-            var this_y = point.value / 1000 * canvas_height;
+            var this_x = begin + i * width;
+            var this_y = point.value / maxY * canvas_height;
             this_y = canvas_height - this_y;
             point.x = this_x;
             point.y = this_y;
+            i += 1;
         });
+
         //打开
         loop = true;
     }
@@ -169,7 +174,7 @@
             var first_point = points[0];
             var last_point = points[points.length - 1];
             context.moveTo(first_point.x, first_point.y);
-            for (i = 1; i < points.length - 2; i++) {
+            for (i = 1; i < points.length - 1; i++) {
                 var this_point = points[i];
                 var next_point = points[i + 1];
                 // console.log(this_point);
@@ -181,43 +186,27 @@
                 ctrlPoint.x = (this_x + next_x) / 2;
                 ctrlPoint.y = (this_y + next_y) / 2;
                 context.quadraticCurveTo(this_x, this_y, ctrlPoint.x, ctrlPoint.y);
-                // points[i].x -= 1;
-                // // this_x -= 1;
-                // if (this_x < -1 * width*2) {
-                //     points.splice(i, 1);
-                //     console.log("del",points);
-                // }
-
             }
-            // first_point.x -= 1;
-            // last_point.x -= 1;
-            // context.fillText("current TPS: " + (100 - this_y), 20, 20);
-            //context.quadraticCurveTo(this_x, this_y, next_x, next_y);
             context.stroke();
         }
     }
 
     // 平滑左移动
     function move() {
-        if (loop) {
-            console.log("looping...");
-            if (points.length > 0) {
-                loop = false;
-                var tmp_arr = [];
-                points.forEach(element => {
-                    element.x -= 1;
-                    if (element.x > -1 * width * 2) {
-                        tmp_arr.push(element);
-                    }
-                });
-                points = tmp_arr;
-                loop = true;
-                _draw();
-            }
+        console.log("looping...");
+        if (points.length > 0) {
+            loop = false;
+            var tmp_arr = [];
+            points.forEach(element => {
+                element.x -= 1;
+                if (element.x > -1 * width * 2) {
+                    tmp_arr.push(element);
+                }
+            });
+            points = tmp_arr;
+            loop = true;
+            _draw();
         }
-        // if (points.length < point_num) {
-        //     requesthub();
-        // }
         setTimeout(() => {
             move();
         }, loop_time);
@@ -239,13 +228,7 @@
     //requesthub();
     move();
 
-
-
-
-
     //获取数据
-
-
     ws.onopen = function () {
         //连接成功时，触发事件
         //请求参数
@@ -279,20 +262,6 @@
                 var objs = _values_to_objs(data[1].response);
                 //添加到曲线数组
                 _objs_appent_to_points(objs);
-                // if (cb) {
-                //     // _get60s(function (data[1].response)) {
-                //     //     console.log("api返回的数据", result);
-                //     //     //数据变成包含时间戳的数组
-                //     //     var objs = _values_to_objs(result);
-                //     //     //添加到曲线数组
-                //     //     _objs_appent_to_points(objs);
-                //     // });
-                //     // cb(data[1].response);
-                //     loop = true;
-                //     // setTimeout(() => {
-                //     //     ws.close();
-                //     // }, 1000);
-                // }
             }
         }
     }
@@ -316,6 +285,7 @@
                 break;
             case WebSocket.CLOSED:
                 console.log("CLOSED");
+                ws = new WebSocket(hub);
                 // do something
                 break;
             default:
@@ -323,44 +293,6 @@
                 // this never happens
                 break;
         }
-        //类似一个控制平滑绘制的锁，锁定。
-        loop = false;
-        // ws.send(JSON.stringify(request["tps"]));
-        // 创建WebSocket 对象
-        // var ws = new WebSocket("wss://explorer.sdag.io:20003");
-        // var ws = new WebSocket(hub);
-
-        // ws.onopen = function () {
-        //     //连接成功时，触发事件
-        //     //请求参数
-        //     console.log("连接中...");
-        //     ws.send(JSON.stringify(request["justsaying"]));
-        //     // ws.send(JSON.stringify(request["tps"]));
-
-        // }
-        //接收到服务端响应的数据时，触发事件
-        // ws.onmessage = function (evt) {
-        //     var data = JSON.parse(evt.data);
-        //     console.log("收到数据", data);
-        //     if (data[0] == "request") {
-        //         if (data[1].command == "subscribe") {
-        //             ws.send(JSON.stringify(request["peer_id"]));
-        //         }
-        //     }
-        //     if (data[0] == "response") {
-        //         if (data[1].response != undefined) {
-        //             console.log("get data from hub", data[1].response);
-        //             if (cb) {
-        //                 cb(data[1].response);
-        //                 loop = true;
-        //                 // setTimeout(() => {
-        //                 //     ws.close();
-        //                 // }, 1000);
-        //             }
-        //         }
-        //     }
-        // }
-        // ws.send(JSON.stringify(request["tps"]));
     }
 
 </script>

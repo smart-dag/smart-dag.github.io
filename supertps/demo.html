@@ -28,7 +28,9 @@
     var globle_index = -1;//对排队显示的points做一个序列
 
     var min = 0;
-    var max = 100;
+    var max = 5000;
+    var maxY = max;
+
     var c = document.getElementById("canvas");
     var context = c.getContext("2d");
 
@@ -112,27 +114,20 @@
         }, []);
 
         // //重新计算x，y
-
-        // for (i = 0; i <= points.length - 1; i++) {
-        //     var point = points[i];
-        //     console.log("重新计算的point", point);
-        //     var this_x = 0 + i * width;
-        //     var this_y = canvas_height - point.value;
-        //     point.x = this_x;
-        //     point.y = this_y;
-        // }
+        var begin = 0;
+        if (points[0].hasOwnProperty("x")) {
+            begin = points[0].x;
+        }
 
         var i = 0;
-
         points.forEach(point => {
-            i += 1;
-            var this_x = 0 + i * width;
-            var this_y = canvas_height - point.value;
+            var this_x = begin + i * width;
+            var this_y = point.value / maxY * canvas_height;
+            this_y = canvas_height - this_y;
             point.x = this_x;
             point.y = this_y;
+            i += 1;
         });
-
-        // console.log("updated points...", points);
 
         //打开
         loop = true;
@@ -347,7 +342,7 @@
             console.log("收到数据", data);
             // if (data[0] == "request") {
             //     if(data[1].command=="subscribe"){
-                    
+
             //     }
             // }
             if (data[0] == "response") {
