@@ -67,10 +67,10 @@
     var canvas_height = 300;
     var canvas_padding = 50;//画曲线的区域
 
-    var point_num = 45;//每屏显示x个点
+    var point_num = 50;//每屏显示x个点
     var height_number = 4;//纵坐标分为x个段数
     var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
-    var loop_time = (canvas_width - canvas_padding * 2) / point_num;//循环时间
+    var loop_time = 1000 / ((canvas_width - canvas_padding * 2) / point_num);//循环时间
     var points = [];//用于显示tps的点，最开始是一分钟
     var loop = false;
     var min = 0;
@@ -176,12 +176,16 @@
             context.fillStyle = "#f00";
             context.font = "14px Georgia";
             //context.fillText(points.length, 20, 20);
-            if (points[points.length - 1].x < canvas_width * 2) {
-                requesthub();
-            }
+            // if (points[points.length - 1].x < canvas_width * 2) {
+            //     requesthub();
+            // }
+
+            // context.moveTo(points[0].x, points[0].y);
 
             for (i = 0; i <= points.length - 1; i++) {
                 var this_point = points[i];
+
+                // context.lineTo(this_point.x, this_point.y);
 
                 if (i + 1 < points.length) {
                     var next_point = points[i + 1];
@@ -193,14 +197,19 @@
                     ctrlPoint.x = (this_x + next_x) / 2;
                     ctrlPoint.y = (this_y + next_y) / 2;
                     context.quadraticCurveTo(this_x, this_y, ctrlPoint.x, ctrlPoint.y);
+                    // context.arc(ctrlPoint.x, ctrlPoint.y, 1, 0, Math.PI * 2, false);
                     // context.fillText(this_point.timestamp, this_point.x, canvas_height);
                     // context.fillRect(this_point.x, canvas_height - canvas_padding, 1, canvas_padding);
                     //
+
                 }
+
+
                 _moving(this_point);
                 _deleteing(this_point);
             }
             context.stroke();
+
             //减去padding，留作绘制坐标
             context.clearRect(0, 0, canvas_padding, canvas_height);
             context.clearRect(canvas_width - canvas_padding, 0, canvas_padding, canvas_height);
@@ -293,6 +302,10 @@
         }
 
     }, loop_time);
+
+    setInterval(() => {
+        requesthub();
+    }, 1000 * 10);
 
     //获得数据
     function requesthub() {
