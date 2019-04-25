@@ -66,7 +66,7 @@
     var canvas_height = 300;
     var canvas_padding = 50;//画曲线的区域
 
-    var point_num = 15;//每屏显示x个点
+    var point_num = 20;//每屏显示x个点
     var height_number = 4;//纵坐标分为x个段数
     var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
     var loop_time = canvas_width / width;//循环时间
@@ -452,20 +452,25 @@
                 var timestamp = result.timestamp + 1;//先+1，便于后面循环
                 var tps = result.secs_tps;//从API得到的tps原始数组
 
-                var max_tps = get_max(min_and_max(tps).max, height_number);//使用最大的tps
 
-                var current_max_tps = 0;
+                var max_tps = min_and_max(tps).max;//得到API返回的tps中最大的。
+                console.log(max_tps);
+
+                var current_max_tps = 0;//临时
+                //找出当前显示曲线tps中最大的
                 points.forEach(point => {
                     if (current_max_tps < point.y) {
                         current_max_tps = point.y;
                     }
                 });
-
+                //如果当前的最大小于API里返回的最大，则当前最大变为api里最大的
                 if (current_max_tps < max_tps) {
                     current_max_tps = max_tps;
                 }
 
                 maxY = current_max_tps;
+
+                maxY = get_max(maxY, height_number);//使用最大的tps
 
                 var tmp_count = maxY.toString().length;
                 var first_number = parseInt(maxY.toString()[0]);
