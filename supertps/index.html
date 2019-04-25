@@ -74,7 +74,7 @@
     var loop = false;
     var min = 0;
     var max = 500;
-    var maxY = 1000;
+    var maxY = 0;//初始化，设置为0
 
     var debug = false;//显示调试信息
     var debug_get_data_count = 0;//获得api数据的次数
@@ -468,20 +468,8 @@
                     current_max_tps = max_tps;
                 }
 
-                maxY = current_max_tps;
 
-                maxY = get_max(maxY, height_number);//使用最大的tps
-
-                var tmp_count = maxY.toString().length;
-                var first_number = parseInt(maxY.toString()[0]);
-                var number = first_number * tmp_count;
-
-
-
-                if (maxY % 2 == 0) {
-                    //如果能被2整除
-
-                }
+                maxY = get_max(current_max_tps, height_number);//使用最大的tps
 
                 //对数据进行转换，变成60秒的对象数组。
                 var objs = [];
