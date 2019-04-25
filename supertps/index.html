@@ -66,10 +66,10 @@
     var canvas_height = 300;
     var canvas_padding = 50;//画曲线的区域
 
-    var point_num = 20;//每屏显示x个点
+    var point_num = 50;//每屏显示x个点
     var height_number = 4;//纵坐标分为x个段数
     var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
-    var loop_time = canvas_width / width;//循环时间
+    var loop_time = (canvas_width-canvas_padding*2) / point_num;//循环时间
     var points = [];//用于显示tps的点，最开始是一分钟
     var loop = false;
     var min = 0;
