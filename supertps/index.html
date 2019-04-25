@@ -454,9 +454,18 @@
 
                 var max_tps = get_max(min_and_max(tps).max, height_number);//使用最大的tps
 
-                if (maxY < max_tps) {
-                    maxY = max_tps;
+                var current_max_tps = 0;
+                points.forEach(point => {
+                    if (current_max_tps < point.y) {
+                        current_max_tps = point.y;
+                    }
+                });
+
+                if (current_max_tps < max_tps) {
+                    current_max_tps = max_tps;
                 }
+
+                maxY = current_max_tps;
 
                 var tmp_count = maxY.toString().length;
                 var first_number = parseInt(maxY.toString()[0]);
