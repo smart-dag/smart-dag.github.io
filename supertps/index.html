@@ -67,6 +67,7 @@
     var canvas_padding = 50;//画曲线的区域
 
     var point_num = 15;//每屏显示x个点
+    var height_number = 4;//纵坐标分为x个段数
     var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
     var loop_time = canvas_width / width;//循环时间
     var points = [];//用于显示tps的点，最开始是一分钟
@@ -144,6 +145,31 @@
     function _drawing() {
         if (points.length > 0) {
             context.clearRect(0, 0, canvas_width, canvas_height);
+
+
+            context.strokeStyle = "#ccc";
+            context.fillStyle = "#ccc";
+
+
+
+            context.beginPath();
+            context.moveTo(canvas_padding, canvas_padding);
+            context.lineTo(canvas_padding, canvas_height - canvas_padding);
+
+            context.lineTo(canvas_width - canvas_padding, canvas_height - canvas_padding);
+            context.stroke();
+
+            //绘制x轴
+            for (let index = 0; index <= point_num; index++) {
+                // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
+                context.beginPath();
+                context.moveTo(index * width + canvas_padding, canvas_height - canvas_padding - 2.5);
+                context.lineTo(index * width + canvas_padding, canvas_height - canvas_padding + 2.5);
+                context.stroke();
+            }
+
+            //
+
             context.beginPath();
             context.strokeStyle = "#f00";
             context.fillStyle = "#f00";
@@ -173,43 +199,27 @@
                 _moving(this_point);
                 _deleteing(this_point);
             }
-            // context.fillText("current TPS: " + (100 - this_y), 20, 20);
-
             context.stroke();
             //减去padding，留作绘制坐标
             context.clearRect(0, 0, canvas_padding, canvas_height);
             context.clearRect(canvas_width - canvas_padding, 0, canvas_padding, canvas_height);
 
-            context.beginPath();
-            context.moveTo(canvas_padding, canvas_padding);
-            context.lineTo(canvas_padding, canvas_height - canvas_padding);
-
-            context.lineTo(canvas_width - canvas_padding, canvas_height - canvas_padding);
-            context.stroke();
-
-            //绘制x轴
-            for (let index = 0; index <= point_num; index++) {
-                // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
-                context.beginPath();
-                context.moveTo(index * width + canvas_padding, canvas_height - canvas_padding - 2.5);
-                context.lineTo(index * width + canvas_padding, canvas_height - canvas_padding + 2.5);
-                context.stroke();
-            }
+            context.strokeStyle = "#ccc";
+            context.fillStyle = "#ccc";
             //绘制y轴
-            for (let index = 0; index <= 5; index++) {
-                var h = (canvas_height - canvas_padding * 2) / 5;
-                var hv = maxY / 5;
-
+            for (let index = 0; index <= height_number; index++) {
+                var h = (canvas_height - canvas_padding * 2) / height_number;
+                var hv = maxY / height_number;
                 // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
                 context.beginPath();
                 context.moveTo(canvas_padding - 2.5, index * h + canvas_padding);
                 context.lineTo(canvas_padding + 2.5, index * h + canvas_padding);
                 context.stroke();
-
-
                 context.fillText(maxY - index * hv, canvas_padding / 3, index * h + canvas_padding + 5);
             }
-            //
+            // context.fillText("current TPS: " + (100 - this_y), 20, 20);
+
+
         }
     }
 
@@ -332,16 +342,78 @@
         }
     ]
 
+
+
+    function generateSmall() {
+        var ch_small = 'a';
+        var str_small = '';
+        for (var i = 0; i < 26; i++) {
+            str_small += String.fromCharCode(ch_small.charCodeAt(0) + i);
+        }
+        return str_small;
+    }
+
+    function generateBig() {
+        var ch_big = 'A';
+        var str_big = '';
+        for (var i = 0; i < 26; i++) {
+            str_big += String.fromCharCode(ch_big.charCodeAt(0) + i);
+        }
+        return str_big;
+    }
+
+    function make_a_peer_id() {
+        var text = generateBig();
+        var peer_id = "";
+        for (let index = 0; index < 32; index++) {
+            var i = parseInt(Math.random() * 26);
+            var s = text[i];
+            peer_id += s;
+        }
+        return peer_id;
+    }
+
     request["peer_id"] = [
         "response",
         {
             "response": {
-                "peer_id": "P6S3NENYHKSDF5K6G277VRP57IXN6KJ2",
+                "peer_id": make_a_peer_id(),
             },
             tag: "0"
         }
     ]
 
+    function get_max(number, who) {
+        //number 数字
+        //who 被谁整除的数
+
+        var count = number.toString().length;
+        var first_number = parseInt(number.toString()[0]);
+        var zero = "";
+        for (let index = 0; index < count - 1; index++) {
+            zero += "0";
+        }
+        var number2 = parseInt(first_number + zero);
+
+        if (number2 < number) {
+            number2 += parseInt(1 + zero);
+        }
+
+        function mod() {
+            if (number2 % who == 0) {
+                //如果能被4整除
+            } else {
+                number2 += parseInt(1 + zero);
+                mod();
+            }
+        }
+        mod();
+
+        if (number2 == 0) {
+            number2 += who;
+        }
+        return number2;
+    }
     //获取数据
     ws.onopen = function () {
         //连接成功时，触发事件
@@ -379,7 +451,24 @@
                 debug_get_data_count += 1;
                 var timestamp = result.timestamp + 1;//先+1，便于后面循环
                 var tps = result.secs_tps;//从API得到的tps原始数组
-                // maxY = result.max_tps;
+
+                var max_tps = get_max(min_and_max(tps).max, height_number);//使用最大的tps
+
+                if (maxY < max_tps) {
+                    maxY = max_tps;
+                }
+
+                var tmp_count = maxY.toString().length;
+                var first_number = parseInt(maxY.toString()[0]);
+                var number = first_number * tmp_count;
+
+
+
+                if (maxY % 2 == 0) {
+                    //如果能被2整除
+
+                }
+
                 //对数据进行转换，变成60秒的对象数组。
                 var objs = [];
                 tps.forEach(element => {
