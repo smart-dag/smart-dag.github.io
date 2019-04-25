@@ -174,7 +174,7 @@
             var first_point = points[0];
             var last_point = points[points.length - 1];
             context.moveTo(first_point.x, first_point.y);
-            for (i = 1; i < points.length - 1; i++) {
+            for (i = 1; i < points.length - 2; i++) {
                 var this_point = points[i];
                 var next_point = points[i + 1];
                 // console.log(this_point);
@@ -239,7 +239,8 @@
     }
     // 断开 web socket 连接成功触发事件
     ws.onclose = function () {
-        console.log("连接已关闭...");
+        console.log("连接已关闭...正在重新链接");
+        ws = new WebSocket(hub);
     };
     ws.onmessage = function (evt) {
         var data = JSON.parse(evt.data);
