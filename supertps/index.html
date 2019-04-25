@@ -454,13 +454,15 @@
 
 
                 var max_tps = min_and_max(tps).max;//得到API返回的tps中最大的。
-                console.log(max_tps);
+
 
                 var current_max_tps = 0;//临时
                 //找出当前显示曲线tps中最大的
                 points.forEach(point => {
-                    if (current_max_tps < point.y) {
-                        current_max_tps = point.y;
+                    if (point.hasOwnProperty("y")) {
+                        if (current_max_tps < point.value) {
+                            current_max_tps = point.value;
+                        }
                     }
                 });
                 //如果当前的最大小于API里返回的最大，则当前最大变为api里最大的
@@ -470,6 +472,8 @@
 
 
                 maxY = get_max(current_max_tps, height_number);//使用最大的tps
+
+                console.log(max_tps, current_max_tps, maxY);
 
                 //对数据进行转换，变成60秒的对象数组。
                 var objs = [];
