@@ -63,9 +63,10 @@
 
     var canvas_width = 600;
     var canvas_height = 200;
+    var canvas_padding = 20;//画曲线的区域
 
-    var point_num = 5;//每屏显示x个点
-    var width = canvas_width / point_num;//点和点之间的宽度
+    var point_num = 30;//每屏显示x个点
+    var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
     var loop_time = canvas_width / width;//循环时间
     var points = [];//用于显示tps的点，最开始是一分钟
     var loop = false;
@@ -136,10 +137,11 @@
     //绘制曲线图
     function _drawing() {
         if (points.length > 0) {
-            context.clearRect(0, 0, c.width, c.height);
+            context.clearRect(0, 0, canvas_width, canvas_height);
             context.beginPath();
             context.strokeStyle = "#f00";
-            context.font = "20px Georgia";
+            context.fillStyle = "#f00";
+            context.font = "14px Georgia";
             //context.fillText(points.length, 20, 20);
             if (points[points.length - 1].x < canvas_width * 2) {
                 requesthub();
@@ -158,12 +160,36 @@
                     ctrlPoint.x = (this_x + next_x) / 2;
                     ctrlPoint.y = (this_y + next_y) / 2;
                     context.quadraticCurveTo(this_x, this_y, ctrlPoint.x, ctrlPoint.y);
+                    // context.fillText(this_point.timestamp, this_point.x, canvas_height);
+                    // context.fillRect(this_point.x, canvas_height - canvas_padding, 1, canvas_padding);
+                    //
                 }
                 _moving(this_point);
                 _deleteing(this_point);
             }
             // context.fillText("current TPS: " + (100 - this_y), 20, 20);
+
             context.stroke();
+            //减去padding，留作绘制坐标
+            context.clearRect(0, 0, canvas_padding, canvas_height);
+            context.clearRect(canvas_width - canvas_padding, 0, canvas_padding, canvas_height);
+
+            context.beginPath();
+            context.moveTo(canvas_padding, canvas_padding);
+            context.lineTo(canvas_padding, canvas_height - canvas_padding);
+
+            context.lineTo(canvas_width - canvas_padding, canvas_height - canvas_padding);
+            context.stroke();
+
+            //
+            for (let index = 0; index <= point_num; index++) {
+                // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
+                context.beginPath();
+                context.moveTo(index * width + canvas_padding, canvas_height - canvas_padding - 2.5);
+                context.lineTo(index * width + canvas_padding, canvas_height - canvas_padding + 2.5);
+                context.stroke();
+            }
+            //
         }
     }
 
@@ -255,9 +281,10 @@
                 obj[next.timestamp] ? '' : obj[next.timestamp] = true && item.push(next);
                 return item;
             }, []);
+
             //重新计算x，y
 
-            var begin = 0;
+            var begin = canvas_padding;
             if (points[0].hasOwnProperty("x")) {
                 begin = points[0].x;
             }
@@ -265,8 +292,11 @@
             var i = 0;
             points.forEach(point => {
                 var this_x = begin + i * width;
-                var this_y = point.value / maxY * canvas_height;
-                this_y = canvas_height - this_y;
+                var this_y = point.value / maxY * (canvas_height - canvas_padding * 2);
+                this_y = canvas_height - this_y - canvas_padding;
+
+
+
                 point.x = parseInt(this_x);
                 point.y = parseInt(this_y);
                 i += 1;
