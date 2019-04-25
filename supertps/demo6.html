@@ -59,51 +59,7 @@
     <canvas id="canvas"></canvas>
 </body>
 <script type="text/javascript">
-    function getFriendlyTime(timestamp) {
-        //var time = timestamp2time(timestamp);
-        var date = new Date();
-        var date2 = new Date(timestamp * 1000);
-        var time = date - date2;
 
-        //存储转换值 
-        var text;
-        var s = 1000;
-        var m = s * 60;
-        var h = m * 60;
-        var d = h * 24;
-        var w = d * 7;
-        var M = d * 30;
-        var y = M * 12;
-        if (time < m) {//1分钟内
-            text = Math.floor(time / s);
-            return text + "秒前";
-        } else if (time < m) {//1分钟内
-            return '刚刚';
-        } else if (m <= time && time <= h) {
-            //超过1分钟少于1小时
-            text = Math.floor(time / m);
-            return text + "分钟前";
-        } else if (h <= time && time <= d) {
-            text = Math.floor(time / h);
-            return text + "小时前";
-        } else if (d <= time && time <= w) {
-            text = Math.floor(time / d);
-            return text + "天前";
-        } else if (w <= time && time <= M) {
-            text = Math.floor(time / w);
-            return text + "周前";
-        } else if (M <= time && time <= y) {
-            text = Math.floor(time / M);
-            return text + "月前";
-        } else if (y <= time && time <= y * 10) {
-            text = Math.floor(time / y);
-            return text + "年前";
-        } else {
-            // //超过3天
-            // var date = new Date(parseInt(date) * 1000);
-            return date2.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-        }
-    }
     var hub = "wss://explorer.sdag.io:20003"
     var ws = null;
 
@@ -125,7 +81,7 @@
     var max = 500;
     var maxY = 0;//初始化，设置为0
 
-    var debug = false;//显示调试信息
+    var debug = true;//显示调试信息
     var debug_get_data_count = 0;//获得api数据的次数
     var debug_append_count = 0;//获取的数据追加到points的次数
     var debug_delete_count = 0;//到达左侧不可见区域的被删掉的point次数
@@ -134,7 +90,7 @@
     var debug_get_frist_point_y = 0;//获得第一个点的y坐标，调试用
     var debug_get_last_point_x = 0;//获得最后一个点的x坐标，调试用
     var debug_get_last_point_y = 0;//获得最后一个点的y坐标，调试用
-    var show_ctrlPoint = false;//显示控制点
+    var show_ctrlPoint = true;//显示控制点
 
     var c = document.getElementById("canvas");
     c.setAttribute("width", canvas_width);
@@ -157,7 +113,7 @@
     }
 
     function randomData() {
-        max = parseInt(Math.random() * 500);
+        max = parseInt(Math.random() * 10000);
         return parseInt(Math.random() * max);
     }
 
@@ -240,8 +196,6 @@
                         if (show_ctrlPoint) {
                             context.arc(ctrlPoint.x, ctrlPoint.y, 1, 0, Math.PI * 2, false);
                         }
-
-                        context.fillText(getFriendlyTime(this_point.timestamp), this_point.x, canvas_height - canvas_padding / 2);
                         // context.arc(ctrlPoint.x, ctrlPoint.y, 1, 0, Math.PI * 2, false);
                         // context.fillText(this_point.timestamp, this_point.x, canvas_height);
                         // context.fillRect(this_point.x, canvas_height - canvas_padding, 1, canvas_padding);
@@ -601,7 +555,7 @@
             current_max_tps = max_tps;
         }
         maxY = get_max(current_max_tps, height_number);//使用最大的tps
-        console.log(max_tps, current_max_tps, maxY);
+        log(max_tps, current_max_tps, maxY);
         //对数据进行转换，变成60秒的对象数组。
         var timestamp = result.timestamp + 1;//先+1，便于后面循环
         var objs = [];
@@ -640,9 +594,7 @@
         objs.forEach(obj => {
             //加入到曲线points里。
             points.push(obj);
-
         });
-        console.log("insert", objs);
 
         // 应该没有重复的了
         // 去掉重复 
