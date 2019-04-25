@@ -61,18 +61,18 @@
 
 
 
-    var canvas_width = 600;
-    var canvas_height = 200;
-    var canvas_padding = 20;//画曲线的区域
+    var canvas_width = 700;
+    var canvas_height = 300;
+    var canvas_padding = 50;//画曲线的区域
 
-    var point_num = 30;//每屏显示x个点
+    var point_num = 15;//每屏显示x个点
     var width = (canvas_width - canvas_padding * 2) / point_num;//点和点之间的宽度
     var loop_time = canvas_width / width;//循环时间
     var points = [];//用于显示tps的点，最开始是一分钟
     var loop = false;
     var min = 0;
-    var max = 100;
-    var maxY = max;
+    var max = 500;
+    var maxY = 1000;
 
     var debug = true;//显示调试信息
     var debug_get_data_count = 0;//获得api数据的次数
@@ -94,7 +94,12 @@
     var status = "ready"; //ready getting_tps got_tps getting_objs got_objs appentting_objs_to_points update_points moving drawing 
 
     function runtps() {
-
+        min = 500;
+        max = 1000;
+        setTimeout(() => {
+            min = 0;
+            max = 500;
+        }, 3000);
     }
 
     function randomData() {
@@ -181,13 +186,27 @@
             context.lineTo(canvas_width - canvas_padding, canvas_height - canvas_padding);
             context.stroke();
 
-            //
+            //绘制x轴
             for (let index = 0; index <= point_num; index++) {
                 // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
                 context.beginPath();
                 context.moveTo(index * width + canvas_padding, canvas_height - canvas_padding - 2.5);
                 context.lineTo(index * width + canvas_padding, canvas_height - canvas_padding + 2.5);
                 context.stroke();
+            }
+            //绘制y轴
+            for (let index = 0; index <= 10; index++) {
+                var h = (canvas_height - canvas_padding * 2) / 10;
+                var hv = maxY / 10;
+
+                // context.fillRect(index * width + canvas_padding, canvas_height - canvas_padding * 1.2, 1, 10);
+                context.beginPath();
+                context.moveTo(canvas_padding - 2.5, index * h + canvas_padding);
+                context.lineTo(canvas_padding + 2.5, index * h + canvas_padding);
+                context.stroke();
+
+
+                context.fillText(maxY - index * hv, canvas_padding / 3, index * h + canvas_padding + 5);
             }
             //
         }
