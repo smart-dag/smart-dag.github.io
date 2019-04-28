@@ -104,6 +104,20 @@
             return date2.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
         }
     }
+    function getTime(timestamp) {
+        function fulltime(number) {
+            if (number < 10) {
+                return "0" + number.toString();
+            } else {
+                return number.toString()
+            }
+        }
+        var date = new Date(timestamp * 1000);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        return fulltime(hours) + ":" + fulltime(minutes) + ":" + fulltime(seconds);
+    }
     var hub = "wss://explorer.sdag.io:20003"
     var ws = null;
 
@@ -124,6 +138,7 @@
     var min = 0;
     var max = 500;
     var maxY = 0;//初始化，设置为0
+    var wsState = "";
 
     var debug = true;//显示调试信息
     var debug_get_data_count = 0;//获得api数据的次数
@@ -241,7 +256,7 @@
                             context.arc(ctrlPoint.x, ctrlPoint.y, 1, 0, Math.PI * 2, false);
                         }
 
-                        context.fillText(getFriendlyTime(this_point.timestamp), this_point.x, canvas_height - canvas_padding / 2);
+                        context.fillText(getTime(this_point.timestamp), this_point.x, canvas_height - canvas_padding / 2);
                         // context.arc(ctrlPoint.x, ctrlPoint.y, 1, 0, Math.PI * 2, false);
                         // context.fillText(this_point.timestamp, this_point.x, canvas_height);
                         // context.fillRect(this_point.x, canvas_height - canvas_padding, 1, canvas_padding);
@@ -357,21 +372,22 @@
             }
         }
         if (!debug) {
+
             switch (ws.readyState) {
                 case WebSocket.CONNECTING:
                     // do something
-                    document.getElementById("wssstatus").innerText = "wss CONNECTING";
+                    wsState = "wss CONNECTING";
                     break;
                 case WebSocket.OPEN:
                     // do something
-                    document.getElementById("wssstatus").innerText = "wss OPENED";
+                    wsState = "wss OPENED";
                     break;
                 case WebSocket.CLOSING:
-                    document.getElementById("wssstatus").innerText = "wss CLOSINGEN";
+                    wsState = "wss CLOSINGEN";
                     // do something
                     break;
                 case WebSocket.CLOSED:
-                    document.getElementById("wssstatus").innerText = "wss CLOSED";
+                    wsState = "wss CLOSED";
                     ws = new WebSocket(hub);
                     // do something
                     break;
@@ -380,6 +396,7 @@
                     // this never happens
                     break;
             }
+            context.fillText(wsState, canvas_padding*1.5, canvas_padding);
         }
 
 
