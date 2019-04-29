@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <title>Document</title>
+    <style>
+        .pan {
+            width: 80%;
+            max-width: 1000;
+            margin: 20px auto;
+            background: #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+
+        .btn {
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form class="pan">
+        <div id="errmsg"></div>
+        <div class="panel panel-default settingnotify">
+            <div class="panel-heading">设置你要订阅转账通知的钱包地址</div>
+            <div class="panel-body">
+
+                <h2>notify<span id="balance"></span></h2>
+                <div class="form-group">
+                    <input type="text" class="form-control" value="" id="address" placeholder="typing address">
+                </div>
+                <button id="watch" type="button" class="btn btn-primary">watch</button>
+            </div>
+        </div>
+
+        <div class="panel panel-default notifying" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">正在订阅 <span id="notifying_address"></span></h3>
+            </div>
+            <div class="panel-body">
+                <div id="notifymsg"></div>
+                <p>
+                    在订阅期间（本网页不关的情况下），任何转入转出都会被捕获。
+                </p>
+            </div>
+        </div>
+
+    </form>
+    <script>
+        var hub = "wss://explorer.sdag.io:20003";
+        function show_alert(type, text) {
+            $("#errmsg").html("");
+            $("#errmsg").html('<div class="alert"><a href="#" class="close" data-dismiss="alert">&times;</a><strong></strong><span id="msg"></span></div>');
+            $(".alert").addClass("alert-" + type);
+            $("#msg").html(text);
+        }
+        function show_notify(type, text) {
+            // $("#notifymsg").html("");
+            console.log(text);
+            var element = $('<div class="alert alert-' + type + '"><a href="#" class="close" data-dismiss="alert">&times;</a><strong></strong><span>' + text + '</span></div>');
+            $("#notifymsg").append(element);
+        }
+
+        $("#watch").click(function () {
+            $("#watch").attr("disabled", true);
+            var address = $("#address").val();
+            if (address.length != 32) {
+                show_alert("danger", "钱包地址不正确！")
+            } else {
+                var ws = new WebSocket(hub);
+                var posted = false;
+                $("#notifying_address").text(address);
+                $(".notifying").show();
+                $(".settingnotify").hide();
+                //获取数据
+                ws.onopen = function () {
+                    //连接成功时，触发事件
+                    //请求参数
+                    console.log("连接中...");
+                }
+                // 断开 web socket 连接成功触发事件
+                ws.onclose = function () {
+                    console.log("连接已关闭...正在重新链接");
+                    posted = false;
+                    ws = new WebSocket(hub);
+                };
+                ws.onmessage = function (evt) {
+                    var data = JSON.parse(evt.data);
+                    console.log("收到数据", data);
+                    if (data[0] == "request") {
+                        if (data[1].command == "subscribe") {
+                            console.log("正在回复 peer_id");
+                            request_peer_id = [
+                                "response",
+                                {
+                                    "response": {
+                                        "peer_id": "MMEP7QKU6ZDYYD63QXSEZXYHIF7RIJOQ",
+                                    },
+                                    tag: "0"
+                                }
+                            ]
+                            ws.send(JSON.stringify(request_peer_id));
+                        }
+                        if (data[1].command == "heartbeat") {
+                            console.log("正在回复 心跳包");
+                            request_heartbeat = [
+                                "response",
+                                {
+                                    command: "heartbeat",
+                                    tag: data[1].tag
+                                }
+                            ]
+                            ws.send(JSON.stringify(request_heartbeat));
+                            if (!posted) {
+                                var request_watch = [
+                                    "request",
+                                    {
+                                        command: "watch",
+                                        params: [address],
+                                        tag: "0"
+                                    }
+                                ]
+                                ws.send(JSON.stringify(request_watch));
+                                posted = true;
+                            }
+                        }
+                    }
+                    if (data[0] == "response") {
+                        if (data[1].response != undefined) {
+                            var result = data[1].response;
+                            console.log("get data from hub", data[1].response);
+                        }
+                    }
+                    if (data[0] == "justsaying") {
+                        if (data[1].body != undefined) {
+                            var result = data[1].body;
+                            if (result.hasOwnProperty("to_msg")) {
+                                var balance = result.balance / 1000000;
+                                var from = result.from;
+                                var to_address = result.to_msg[0][0];
+                                var amount = result.to_msg[0][1] / 1000000;
+                                if (address == to_address) {
+                                    //给自己的
+                                    var msg = "收到来自 <b>" + from + "</b> 的金额 <b>" + amount + "</b> SDG";
+                                    console.log(msg);
+                                    show_notify("success", msg);
+                                }
+                            }
+                            console.log(result);
+                        }
+
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
