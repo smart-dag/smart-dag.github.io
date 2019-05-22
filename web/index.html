@@ -15,6 +15,7 @@
 <body>
     <div id="app">
         <div class="layout" style="width: 90%;max-width:1500px;margin: 0 auto;">
+            <!-- 导航开始 -->
             <div class="sdag-nav">
                 <div class="nav-pc">
                     <!---->
@@ -47,7 +48,12 @@
                     </div>
                 </div>
             </div>
+            <!-- 导航结束 -->
+
+            <!-- 中间部分开始 -->
             <div class="index-cont">
+
+                <!-- builder 区域开始 -->
                 <div class="index-top-swiper">
                     <div class="swiper-container swiper-container-initialized swiper-container-horizontal">
                         <div class="swiper-wrapper">
@@ -55,13 +61,16 @@
                                 <div class="top-silder-1">
                                     <div class="top-word-cont main-content">
                                         <div class="word-p1">区块链搭建，从未如此简单</div>
-                                        <div class="word-p2">2分钟拥有自己的区块链+浏览器+钱包！免费！一分钱都不花！</div>
+                                        <div class="word-p2">仅需10秒，拥有你自己的区块链+浏览器+钱包！免费！一分钱都不花！</div>
                                         <div class="word-p2">
-                                            <p>第1步：设置配置文件</p>
                                             <p>
                                                 <div class="form-group">
                                                     <label for="">区块链名称</label>
                                                     <input class="form-control" type="text" name="" id="" placeholder="输入区块链名称">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">公证人数量（免费版只能是3个）</label>
+                                                    <input class="form-control" type="text" disabled value="3" name="" id="" placeholder="输入公证人数量">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="">Token总量</label>
@@ -76,14 +85,10 @@
                                                     <input class="form-control" type="file" name="" id="" placeholder="上传区块链logo">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="">服务器地址</label>
-                                                    <input class="form-control" type="text" name="" id="" placeholder="输入部署的服务器地址">
+                                                    <label for="">服务器地址（如本机测试，则输入http://localhost）</label>
+                                                    <input class="form-control" type="text" name="" value="http://localhost" id="" placeholder="输入部署的服务器地址">
                                                 </div>
-                                                <input class="btn btn-primary" type="button" value="免费生成！">
-                                            </p>
-                                            <p>第2步：打开终端，输入1条命令，全部搞定！</p>
-                                            <p>
-                                                docker run --rm -d --name sdag -p 6615:6615 -p 8080:8080 sdag/sdag_testnet_dev
+                                                <input class="btn btn-primary" type="button" value="免费生成 主链 + explorer + webwallet ！">
                                             </p>
                                         </div>
                                     </div>
@@ -91,90 +96,95 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span> -->
                 </div>
-            </div>
+                <!-- builder 区域结束 -->
 
-            <div class="index-cont">
-                <div class="index-top-swiper">
-                    <div class="swiper-container swiper-container-initialized swiper-container-horizontal">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide swiper-slide-active">
-                                <div class="top-silder-1">
-                                    <div class="top-word-cont main-content">
-                                        <div class="word-p1">区块链搭建，从未如此简单</div>
-                                        <div class="word-p2">2分钟拥有自己的区块链+浏览器+钱包！免费！一分钱都不花！</div>
-                                        <div class="word-p2">
-                                            <p>第1步：设置配置文件</p>
-                                            <p>
-                                                <div class="form-group">
-                                                    <label for="">区块链名称</label>
-                                                    <input class="form-control" type="text" name="" id="" placeholder="输入区块链名称">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="">Token总量</label>
-                                                    <input class="form-control" type="text" name="" id="" placeholder="输入Token总量">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="">Token符号</label>
-                                                    <input class="form-control" type="text" name="" id="" placeholder="输入Token符号">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="">区块链logo</label>
-                                                    <input class="form-control" type="file" name="" id="" placeholder="上传区块链logo">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="">服务器地址</label>
-                                                    <input class="form-control" type="text" name="" id="" placeholder="输入部署的服务器地址">
-                                                </div>
-                                                <input class="btn btn-primary" type="button" value="免费生成！">
-                                            </p>
-                                            <p>第2步：打开终端，输入1条命令，全部搞定！</p>
-                                            <p>
-                                                docker run --rm -d --name sdag -p 6615:6615 -p 8080:8080 sdag/sdag_testnet_dev
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- SDAG 特点开始 -->
+                <div class="index-idea index-module">
+                    <div class="main-content">
+                        <div class="module-title">SDAG特点</div>
+                        <!-- <div class="module-exp"></div>
+                        <div class="module-handle">
+                            <a href="" target="_blank" class="btn-main"></a>
+                        </div> -->
+                        <style>
+                            .info-item {
+                                margin: 10px;
+                            }
+                        </style>
+                        <div class="idea-info-cont">
+                            <div class="info-item">
+                                <!-- <div class="item-img-cont"><img src="/static/images/index/index-icon-1.png" style="width: 72px; height: 72px;"></div> -->
+                                <div class="item-title">闪电拥有</div>
+                                <div class="item-info">从0开始，拥有自己的区块链，最快只需10秒钟</div>
+                                <div class="item-title"><button class="btn btn-primary" type="button">立刻拥有</button></div>
+                            </div>
+                            <div class="info-item">
+                                <!-- <div class="item-img-cont"><img src="/static/images/index/index-icon-2.png" style="width: 68px; height: 68px;"></div> -->
+                                <div class="item-title">功能齐全</div>
+                                <div class="item-info">主链 + 浏览器 + 钱包 一应俱全，还有 SDK 轻松二次开发</div>
+                                <div class="item-title"><button class="btn btn-primary" type="button">免费咨询</button></div>
+                            </div>
+                            <div class="info-item">
+                                <!-- <div class="item-img-cont"><img src="/static/images/index/index-icon-3.png" style="width: 70px; height: 67px;"></div> -->
+                                <div class="item-title">秒级确认</div>
+                                <div class="item-info">确认交易只需1秒，赋能新零售和共享经济毫无压力</div>
+                                <div class="item-title"><button class="btn btn-primary" type="button">立刻体验</button></div>
+                            </div>
+                            <div class="info-item">
+                                <!-- <div class="item-img-cont"><img src="/static/images/index/index-icon-3.png" style="width: 70px; height: 67px;"></div> -->
+                                <div class="item-title">开源免费</div>
+                                <div class="item-info">SDAG已经在github上面开源，个人用户可免费使用</div>
+                                <div class="item-title"><button class="btn btn-primary" type="button">github</button></div>
+                            </div>
+                            <div class="info-item">
+                                <!-- <div class="item-img-cont"><img src="/static/images/index/index-icon-3.png" style="width: 70px; height: 67px;"></div> -->
+                                <div class="item-title">个性定制</div>
+                                <div class="item-info">专业团队7天*24小时全年无休，竭诚为您服务！</div>
+                                <div class="item-title"><button class="btn btn-primary" type="button">免费咨询</button></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
+                <!-- SDAG 特点结束 -->
+
             </div>
+            <!-- 中间部分结束 -->
 
-            <div data-v-ff2c0716="" class="sdag-footer">
-                <div data-v-ff2c0716="" class="footer-pc-cont clearfix">
-                    <div data-v-ff2c0716="" class="main-content">
-                        <div data-v-ff2c0716="" class="contact-type-box">
-                            <div data-v-ff2c0716="" class="contact-type-cont">
-
-                                <div data-v-ff2c0716="" class="contact-type-item"><a data-v-ff2c0716="" href="https://github.com/smart-dag" target="_blank" class="github-box"><i
-                                                        data-v-ff2c0716="" class="iconfont icon-github github-icon"></i>
-                                                    <div data-v-ff2c0716="">Github</div>
-                                                </a></div>
+            <!-- 底部信息开始 -->
+            <div class="sdag-footer">
+                <div class="footer-pc-cont">
+                    <div class="main-content">
+                        <div class="contact-type-box">
+                            <div class="contact-type-cont">
+                                <div class="contact-type-item">
+                                    <a href="https://github.com/smart-dag" target="_blank" class="github-box">
+                                        <i class="iconfont icon-github github-icon"></i>
+                                        <div>Github</div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <div data-v-ff2c0716="" class="footer-copyright">
+                        <div class="footer-copyright">
                             Copyright © 2019 SDAG.io All Rights Reserved.
                         </div>
                     </div>
                 </div>
-                <div data-v-ff2c0716="" class="footer-mobile-cont">
-                    <div data-v-ff2c0716="" class="footer-cont">
-                        <div data-v-ff2c0716="" class="footer-contact-list">
-                            <div data-v-ff2c0716="" class="contact-item"><a data-v-ff2c0716="" href="https://github.com/smart-dag"><i data-v-ff2c0716=""
-                                                    class="iconfont icon-github"></i></a>
-                                <div data-v-ff2c0716="" class="item-name">GitHub</div>
+                <div class="footer-mobile-cont">
+                    <div class="footer-cont">
+                        <div class="footer-contact-list">
+                            <div class="contact-item"><a href="https://github.com/smart-dag"><i 
+                                                                class="iconfont icon-github"></i></a>
+                                <div class="item-name">GitHub</div>
                             </div>
                         </div>
-                        <div data-v-ff2c0716="" class="footer-copyright">Copyright © 2019 SDAG.io All Rights Reserved.
+                        <div class="footer-copyright">Copyright © 2019 SDAG.io All Rights Reserved.
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- 底部信息结束 -->
         </div>
-
     </div>
 </body>
 
