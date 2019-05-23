@@ -469,19 +469,20 @@ a {
         display: none
     }
     .index-cont {
-        background-color: #000;
-        padding-bottom: 50px;
+        /* background-color: #000; */
+        /* padding-bottom: 50px; */
     }
     /* builder 2步搭建区块链 */
     .index-cont .index-top-swiper {
         /* height: 620px; */
         height: auto;
-        /* background-color: #212a39; */
-        background: #000;
+        background-color: #212a39;
+        /* background: #000; */
+        padding-bottom: 50px;
     }
     .index-cont .index-top-swiper .top-word-cont {
-        overflow: auto;
-        padding-left: 30px
+        /* overflow: auto; */
+        /* padding-left: 30px */
     }
     .index-cont .index-top-swiper .top-word-cont .word-p1 {
         margin-top: 110px;
@@ -500,18 +501,18 @@ a {
     }
     .index-cont .index-top-swiper .top-silder-1 {
         height: 100%;
-        background: url(/static/img/index-banner.dab1eb6.gif) no-repeat bottom
+        /* background: url(/static/img/index-banner.dab1eb6.gif) no-repeat bottom */
     }
     .index-cont .index-top-swiper .top-silder-2 {
         height: 100%
     }
     .index-cont .index-top-swiper .top-silder-2.en,
     .index-cont .index-top-swiper .top-silder-2.sn {
-        background: url(/static/img/banner-en-2.80bddd7.png) no-repeat bottom;
+        /* background: url(/static/img/banner-en-2.80bddd7.png) no-repeat bottom; */
         background-color: #523797
     }
     .index-cont .index-top-swiper .top-silder-2.cn {
-        background: url(/static/img/banner-cn-2.2753b0a.png) no-repeat bottom;
+        /* background: url(/static/img/banner-cn-2.2753b0a.png) no-repeat bottom; */
         background-color: #523797
     }
     .index-cont .index-top-swiper .top-silder-2 .main-content {
@@ -653,7 +654,7 @@ a {
         text-align: center
     }
     .index-cont .index-idea {
-        background: url(/static/img/idea-bg1.95c187b.png) no-repeat 100% 100%
+        /* background: url(/static/img/idea-bg1.95c187b.png) no-repeat 100% 100% */
     }
     .index-cont .index-idea .idea-info-cont {
         margin-top: 35px;
@@ -804,7 +805,7 @@ a {
         margin: 60px auto 0;
         width: 977px;
         height: 499px;
-        background: url(/static/img/map-bg.f4b73b8.png) no-repeat 50%;
+        /* background: url(/static/img/map-bg.f4b73b8.png) no-repeat 50%; */
         position: relative
     }
     .index-cont .index-community .community-map-pc-cont .map-dot {
@@ -1308,10 +1309,10 @@ a {
         display: none
     }
     .wallet-page-cont .wallet-list-cont .keypair-quick-wrap .keypair-wrap {
-        background: url(/static/img/keypair-bg.8955820.png) no-repeat 50%
+        /* background: url(/static/img/keypair-bg.8955820.png) no-repeat 50% */
     }
     .wallet-page-cont .wallet-list-cont .keypair-quick-wrap .quick-wrap {
-        background: url(/static/img/quick-bg.0c49a2e.png) no-repeat 50%
+        /* background: url(/static/img/quick-bg.0c49a2e.png) no-repeat 50% */
     }
     .wallet-page-cont .wallet-list-cont .wallet-dev-cont {
         padding: 100px 0 70px;
@@ -1331,7 +1332,7 @@ a {
     }
     .wallet-det-cont .det-top-cont {
         height: 560px;
-        background: url(/static/images/wallet/det-top.png) no-repeat bottom;
+        /* background: url(/static/images/wallet/det-top.png) no-repeat bottom; */
         background-color: #2a303b
     }
     .wallet-det-cont .det-top-cont .main-content {
@@ -1786,7 +1787,7 @@ a {
     }
     .dev-cont .dev-top {
         height: 400px;
-        background: url(/static/img/top-bg.16ab27f.png) no-repeat 50%;
+        /* background: url(/static/img/top-bg.16ab27f.png) no-repeat 50%; */
         background-color: #242a39
     }
     .dev-cont .dev-top .top-title {
@@ -1941,7 +1942,7 @@ a {
     }
     .dev-cont .dev-bottom {
         height: 540px;
-        background: url(/static/img/bottom-bg.94c8205.png) no-repeat center 300px;
+        /* background: url(/static/img/bottom-bg.94c8205.png) no-repeat center 300px; */
         background-color: #f6f6f6
     }
     .dev-cont .dev-bottom .icon-list {
@@ -1990,7 +1991,7 @@ a {
         display: none
     }
     .tech-content .tech-framework {
-        background: url(/static/img/model-bg.e50b449.png) no-repeat center 600px;
+        /* background: url(/static/img/model-bg.e50b449.png) no-repeat center 600px; */
         background-color: #fff;
         padding-top: 50px;
         padding-bottom: 50px
@@ -2173,7 +2174,7 @@ a {
         background: #f6f6f6
     }
     .tech-content .bottom-list-cont {
-        background: url(/static/img/model-bg.e50b449.png) no-repeat center 220px;
+        /* background: url(/static/img/model-bg.e50b449.png) no-repeat center 220px; */
         background-color: #fff
     }
     .tech-content .bottom-list-cont .list-wrapper {
@@ -2246,7 +2247,7 @@ a {
     }
     .tech-content .tech-bottom {
         height: 98px;
-        background: url(/static/img/bg-bottom.169421e.png) no-repeat 50%
+        /* background: url(/static/img/bg-bottom.169421e.png) no-repeat 50% */
     }
     .tech-content .tech-bottom .bottom-words {
         width: 1200px;
@@ -2974,7 +2975,10 @@ a {
     }
     .layout {
         position: relative;
-        padding-top: 3.125rem
+        padding-top: 3.125rem;
+        /* width: 90%;
+        max-width:1500px;
+        margin: 0 auto; */
     }
     .sdag-nav .nav-pc {
         display: none
@@ -2992,8 +2996,10 @@ a {
     }
     /* 2步生成区块链 */
     .index-cont .index-top-swiper {
-        height: 13.28rem;
+        /* height: 13.28rem; */
         width: 100%;
+        background: #212a39;
+        padding-bottom: 50px;
     }
     .index-cont .index-top-swiper .top-word-cont {
         padding-top: 2.8rem;
@@ -3014,12 +3020,12 @@ a {
         line-height: 1.5
     }
     .index-cont .index-top-swiper .swiper-slide {
-        height: 13.28rem
+        /* height: 13.28rem */
     }
     .index-cont .index-top-swiper .top-silder-1 {
         height: 100%;
-        background: url(/static/img/mobile-index-top.d669005.gif) no-repeat bottom;
-        background-size: cover
+        /* background: url(/static/img/mobile-index-top.d669005.gif) no-repeat bottom;
+        background-size: cover */
     }
     .index-cont .index-top-swiper .top-silder-2 {
         height: 100%;
@@ -5125,7 +5131,9 @@ a {
     width: 100%;
     height: 3.125rem;
     z-index: 999;
-    top: 0
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .nav-mobile .nav-top {
