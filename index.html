@@ -92,18 +92,18 @@
                 // scrollOverflow:true,
                 onLeave: function (origin, destination, direction) {
                     var leavingSection = this;
-                    if (origin == 1 && direction == 'down') {
-                        $('.header').show();
-                    }
-                    if (destination == 1) {
-                        $('.header').hide();
-                    }
+                    // if (origin == 1 && direction == 'down') {
+                    //     $('.header').show();
+                    // }
+                    // if (destination == 1) {
+                    //     $('.header').hide();
+                    // }
                 }
             });
 
             $.fn.fullpage.setResponsive(true);
 
-            $('.header').hide();
+            $('.header').show();
 
 
         });
